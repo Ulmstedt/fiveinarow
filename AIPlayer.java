@@ -1,0 +1,157 @@
+package fiveinarow;
+
+/**
+ *
+ * @author Sehnsucht
+ */
+public class AIPlayer extends Player {
+
+    private int width, height;
+    //private int[][] basePointGrid;
+
+    public AIPlayer(int id, Game game) {
+        super(id, game);
+        width = game.getWidth();
+        height = game.getHeight();
+        pointGrid = new int[width][height];
+        //basePointGrid = new int[width][height];
+        //initBasePointGrid();
+    }
+
+    /*private void initBasePointGrid() {
+     for (int i = 0; i < width; i++) {
+     for (int j = 0; j < height; j++) {
+     basePointGrid[i][j] = (i <= width - i - 1 ? i : width - i - 1) + (j <= height - j - 1 ? j : height - j - 1);
+     }
+     }
+     }*/
+    private void resetPointGrid() {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                pointGrid[i][j] = (i <= width - i - 1 ? i : width - i - 1) + (j <= height - j - 1 ? j : height - j - 1);
+            }
+        }
+    }
+
+    @Override
+    public void playRound() {
+        //Start time of AI's turn
+        long startTime = System.currentTimeMillis();
+
+        pointGrid = calculatePointGrid(game.getBoard());
+        findBestMove();
+        System.out.print("AI played (" + currX + ", " + currY + "), taking ");
+        if (game.getTile(currX, currY) == 0) {
+            game.setTile(currX, currY, ID);
+            game.nextPlayer();
+        }
+        //End time of AI's turn
+        long endTime = System.currentTimeMillis();
+        long timeSpent = endTime - startTime;
+        System.out.println(timeSpent + " ms.");
+
+        //For debugging
+        calculatePointGrid(game.getBoard());
+    }
+
+    private void findBestMove() {
+        currX = currY = 0;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (pointGrid[i][j] > pointGrid[currX][currY]) {
+                    currX = i;
+                    currY = j;
+                }
+            }
+        }
+    }
+
+    public int[][] calculatePointGrid(int[][] board) {
+        resetPointGrid();
+        //int[][] pointGrid = this.getPointGrid().clone();
+        int[][] tempBoard = board.clone(); //Copy board
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = 0; x < game.getWidth(); x++) {
+                for (int y = 0; y < game.getHeight(); y++) {
+                    if (game.getTile(x, y) == 0) {
+                        //Check if placement would give victory to any player
+                        tempBoard[x][y] = p;
+                        if (game.checkForWinner(tempBoard) == p) {
+                            pointGrid[x][y] += (p == ID ? 1000 : 200);
+                        } else if (checkForFourSetup(tempBoard) == p) {
+                            pointGrid[x][y] += (p == ID ? 50 : 40);
+                        } else if (checkForThreeSetup(tempBoard) == p) {
+                            pointGrid[x][y] += (p == ID ? 20 : 10);
+                        }
+                        tempBoard[x][y] = 0;
+
+                    } else {
+                        pointGrid[x][y] = -1;
+                    }
+                }
+            }
+        }
+        return pointGrid;
+    }
+
+    /*
+     Checks if a player has setup to win.
+     Returns 0 if no setup, or the player ID if someone has a setup.
+     */
+    public int checkForFourSetup(int[][] tiles) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    //Check rows
+                    if (x <= width - 4 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p && tiles[x + 3][y] == p) {
+                        return p;
+                    }
+                    //Check columns
+                    if (y <= height - 4 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p && tiles[x][y + 3] == p)) {
+                        return p;
+                    }
+                    //Check diagonals \
+                    if (x <= width - 4 && y <= height - 4
+                            && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p)) {
+                        return p;
+                    }
+                    //Check diagonals /
+                    if (x >= 3 && y <= height - 4
+                            && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForThreeSetup(int[][] tiles) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    //Check rows
+                    if (x <= width - 3 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p) {
+                        return p;
+                    }
+                    //Check columns
+                    if (y <= height - 3 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p)) {
+                        return p;
+                    }
+                    //Check diagonals \
+                    if (x <= width - 3 && y <= height - 3
+                            && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p)) {
+                        return p;
+                    }
+                    //Check diagonals /
+                    if (x >= 2 && y <= height - 3
+                            && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+}
