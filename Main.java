@@ -20,7 +20,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        final Game game = new Game(11, 11);
+        final Game game = new Game(15, 15);
         new GameFrame(game);
 
         final Action tick = new AbstractAction() {
