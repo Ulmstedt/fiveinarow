@@ -44,6 +44,7 @@ public class Player {
     public void playRound() {
         if (game.getTile(currX, currY) == 0) {
             game.setTile(currX, currY, ID);
+            game.incrementRoundCount();
             game.nextPlayer();
         }
     }

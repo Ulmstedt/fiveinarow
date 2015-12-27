@@ -13,7 +13,7 @@ public class Game {
     private Player currentPlayer;
 
     private int width, height;
-    private int winner;
+    private int winner, roundCount;
     private boolean pointsGiven;
 
     private int[][] board;
@@ -64,6 +64,7 @@ public class Game {
         }
         winner = 0;
         pointsGiven = false;
+        roundCount = 0;
     }
 
     public void nextPlayer() {
@@ -163,6 +164,10 @@ public class Game {
     public boolean getPointsGiven(){
         return pointsGiven;
     }
+    
+    public int getRoundCount(){
+        return roundCount;
+    }
             
 
     // #############
@@ -171,5 +176,9 @@ public class Game {
     public void setTile(int x, int y, int value) {
 
         board[x][y] = value;
+    }
+    
+    public void incrementRoundCount(){
+        roundCount++;
     }
 }

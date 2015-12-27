@@ -43,6 +43,7 @@ public class AIPlayer extends Player {
         System.out.print("AI played (" + currX + ", " + currY + "), taking ");
         if (game.getTile(currX, currY) == 0) {
             game.setTile(currX, currY, ID);
+            game.incrementRoundCount();
             game.nextPlayer();
         }
         //End time of AI's turn

@@ -142,7 +142,9 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         g2d.setFont(new Font("Serif", Font.BOLD, 14));
         g2d.setColor(ColorList.colors.get(currentPlayer - 1));
         g2d.drawString("Player " + currentPlayer + "'s turn", 3, 14);
-
+        //Draw round number
+        g2d.setColor(Color.BLACK);
+        g2d.drawString("Round: " + game.getRoundCount(), 350, 14);
         //Draw scores
         //Player 1
         g2d.setColor(ColorList.colors.get(0));
