@@ -77,11 +77,15 @@ public class AIPlayer extends Player {
                         //Check if placement would give victory to any player
                         tempBoard[x][y] = p;
                         if (game.checkForWinner(tempBoard) == p) {
-                            pointGrid[x][y] += (p == ID ? 1000 : 200);
-                        } else if (checkForFourSetup(tempBoard) == p) {
-                            pointGrid[x][y] += (p == ID ? 50 : 40);
-                        } else if (checkForThreeSetup(tempBoard) == p) {
-                            pointGrid[x][y] += (p == ID ? 20 : 10);
+                            pointGrid[x][y] += (p == ID ? 2000 : 500);
+                        }
+                        //Check each direction separately to count double setups
+                        for (int mode = 1; mode <= 4; mode++) {
+                            if (checkForFourSetup(tempBoard, mode) == p) {
+                                pointGrid[x][y] += (p == ID ? 50 : 40);
+                            } else if (checkForThreeSetup(tempBoard, mode) == p) {
+                                pointGrid[x][y] += (p == ID ? 20 : 10);
+                            }
                         }
                         tempBoard[x][y] = 0;
 
@@ -96,62 +100,84 @@ public class AIPlayer extends Player {
 
     /*
      Checks if a player has setup to win.
+     Modes: 1 = rows, 2 = columns, 3 = diagonal \, 4 = diagonal /
      Returns 0 if no setup, or the player ID if someone has a setup.
      */
-    public int checkForFourSetup(int[][] tiles) {
+    public int checkForFourSetup(int[][] tiles, int mode) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    //Check rows
-                    if (x <= width - 4 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p && tiles[x + 3][y] == p) {
-                        return p;
-                    }
-                    //Check columns
-                    if (y <= height - 4 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p && tiles[x][y + 3] == p)) {
-                        return p;
-                    }
-                    //Check diagonals \
-                    if (x <= width - 4 && y <= height - 4
-                            && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p)) {
-                        return p;
-                    }
-                    //Check diagonals /
-                    if (x >= 3 && y <= height - 4
-                            && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p)) {
-                        return p;
+                    switch (mode) {
+                        case 1:
+                            //Check rows
+                            if (x <= width - 4 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p && tiles[x + 3][y] == p) {
+                                return p;
+                            }
+                            break;
+                        case 2:
+                            //Check columns
+                            if (y <= height - 4 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p && tiles[x][y + 3] == p)) {
+                                return p;
+                            }
+                            break;
+                        case 3:
+                            //Check diagonals \
+                            if (x <= width - 4 && y <= height - 4
+                                    && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p)) {
+                                return p;
+                            }
+                            break;
+                        case 4:
+                            //Check diagonals /
+                            if (x >= 3 && y <= height - 4
+                                    && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p)) {
+                                return p;
+                            }
+                            break;
                     }
                 }
             }
         }
+
         return 0;
     }
 
-    public int checkForThreeSetup(int[][] tiles) {
+    public int checkForThreeSetup(int[][] tiles, int mode) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    //Check rows
-                    if (x <= width - 3 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p) {
-                        return p;
-                    }
-                    //Check columns
-                    if (y <= height - 3 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p)) {
-                        return p;
-                    }
-                    //Check diagonals \
-                    if (x <= width - 3 && y <= height - 3
-                            && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p)) {
-                        return p;
-                    }
-                    //Check diagonals /
-                    if (x >= 2 && y <= height - 3
-                            && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p)) {
-                        return p;
+                    switch (mode) {
+                        case 1:
+                            //Check rows
+                            if (x <= width - 3 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p) {
+                                return p;
+                            }
+                            break;
+                        case 2:
+                            //Check columns
+                            if (y <= height - 3 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p)) {
+                                return p;
+                            }
+                            break;
+                        case 3:
+                            //Check diagonals \
+                            if (x <= width - 3 && y <= height - 3
+                                    && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p)) {
+                                return p;
+                            }
+                            break;
+                        case 4:
+                            //Check diagonals /
+                            if (x >= 2 && y <= height - 3
+                                    && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p)) {
+                                return p;
+                            }
+                            break;
                     }
                 }
             }
         }
+
         return 0;
     }
-
 }

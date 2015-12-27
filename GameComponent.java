@@ -171,9 +171,9 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                         g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
                     }
                     //Draw AI's  score grid (for debugging)
-                    g2d.setColor(Color.GRAY);
-                    g2d.setFont(new Font("Serif", Font.BOLD, 20));
-                    g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 32, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 17);
+//                    g2d.setColor(Color.GRAY);
+//                    g2d.setFont(new Font("Serif", Font.BOLD, 20));
+//                    g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 32, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 17);
                 }
             }
         }
