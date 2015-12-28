@@ -19,9 +19,12 @@ public final class ColorList {
     
     public static void initColors(){
         colors.add(Color.RED);
+        colors.add(Color.CYAN);
         colors.add(Color.BLUE);
         colors.add(Color.GREEN);
-        colors.add(Color.CYAN);
-        colors.add(Color.orange);
+        colors.add(Color.ORANGE);
+        colors.add(Color.PINK);
+        colors.add(Color.magenta);
+        colors.add(Color.yellow);
     }
 }

@@ -1,5 +1,6 @@
 package fiveinarow;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,12 @@ public class Game {
     private int winner, roundCount;
     private boolean pointsGiven;
 
+    //Used for random colors on the board
+    private Color[][] colors;
+
     private int[][] board;
+    
+    public final boolean DEBUG = true;
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -24,7 +30,6 @@ public class Game {
         this.width = width;
         this.height = height;
         this.winner = 0;
-        this.board = new int[width][height];
         initGame();
     }
 
@@ -51,9 +56,14 @@ public class Game {
     }
 
     private void initGame() {
-        playerList.add(new Player(1, this));
+        this.board = new int[width][height];
+        //playerList.add(new Player(1, this));
+        playerList.add(new AIPlayer(1, this));
         playerList.add(new AIPlayer(2, this));
+        playerList.add(new AIPlayer(3, this));
+
         currentPlayer = playerList.get(0);
+        colors = generateRandomColors(); //Random colors
     }
 
     public void resetGame() {
@@ -65,6 +75,18 @@ public class Game {
         winner = 0;
         pointsGiven = false;
         roundCount = 0;
+        colors = generateRandomColors(); //Random colors
+    }
+
+    private Color[][] generateRandomColors() {
+        Color[][] color = new Color[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                //color[i][j] = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)); //Random colors
+                color[i][j] = (Math.random() >= 0.5 ? Color.BLUE : Color.RED); //Random red/blue
+            }
+        }
+        return color;
     }
 
     public void nextPlayer() {
@@ -160,15 +182,18 @@ public class Game {
     public int[][] getBoard() {
         return board;
     }
-    
-    public boolean getPointsGiven(){
+
+    public boolean getPointsGiven() {
         return pointsGiven;
     }
-    
-    public int getRoundCount(){
+
+    public int getRoundCount() {
         return roundCount;
     }
-            
+
+    public Color[][] getColors() {
+        return colors;
+    }
 
     // #############
     // ## Setters ##
@@ -177,8 +202,8 @@ public class Game {
 
         board[x][y] = value;
     }
-    
-    public void incrementRoundCount(){
+
+    public void incrementRoundCount() {
         roundCount++;
     }
 }

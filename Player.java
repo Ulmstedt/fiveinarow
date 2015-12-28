@@ -29,8 +29,22 @@ public class Player {
         return score;
     }
 
+    // AI
     public int[][] getPointGrid() {
         return pointGrid;
+    }
+
+    // AI
+    public int findHighestScore() {
+        int highest = 1;
+        for (int x = 0; x < game.getWidth(); x++) {
+            for (int y = 0; y < game.getHeight(); y++) {
+                if (pointGrid[x][y] > highest) {
+                    highest = pointGrid[x][y];
+                }
+            }
+        }
+        return highest;
     }
 
     public void resetScore() {

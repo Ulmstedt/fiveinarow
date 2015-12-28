@@ -144,7 +144,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         g2d.drawString("Player " + currentPlayer + "'s turn", 3, 14);
         //Draw round number
         g2d.setColor(Color.BLACK);
-        g2d.drawString("Round: " + game.getRoundCount(), width/2 - 30, 14);
+        g2d.drawString("Round: " + game.getRoundCount(), width / 2 - 30, 14);
         //Draw scores
         //Player 1
         g2d.setColor(ColorList.colors.get(0));
@@ -153,6 +153,18 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         g2d.setColor(ColorList.colors.get(1));
         g2d.drawString("Player 1: " + game.getPlayerList().get(1).getScore(), width - 80, 14);
 
+        int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
+        int highestScore = game.getPlayerList().get(1).findHighestScore();
+
+        if (game.DEBUG) {
+            //Draw heatmap of bots decision
+            for (int x = 0; x < game.getWidth(); x++) {
+                for (int y = 0; y < game.getHeight(); y++) {
+                    g2d.setColor(new Color((int) (((double) AIScoreGrid[x][y] / (double) highestScore) * 255), 50, 120));
+                    g2d.fillRect(x * Constants.SQUARE_SIZE, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE);
+                }
+            }
+        }
         //Draw square lines
         g2d.setColor(Color.BLACK);
         for (int i = 0; i < width; i += Constants.SQUARE_SIZE) {
@@ -162,20 +174,23 @@ public class GameComponent extends JComponent implements GameListener, MouseList
             g2d.fillRect(0, i + Constants.PADDING_TOP, width, Constants.LINE_THICKNESS);
         }
 
-        int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
+        Color[][] colors = game.getColors();
 
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
                     if (game.getTile(x, y) == p) {
-                        g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1));
+                        g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1)); //Standard colors
+                        //g2d.setColor(colors[x][y]); //Random colors
                         g2d.setFont(new Font("Serif", Font.BOLD, 50));
                         g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
                     }
-                    //Draw AI's  score grid (for debugging)
-//                    g2d.setColor(Color.GRAY);
-//                    g2d.setFont(new Font("Serif", Font.BOLD, 20));
-//                    g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 32, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 17);
+                    if (game.DEBUG) {
+                        //Draw AI's  score grid (for debugging)
+                        g2d.setColor(Color.BLACK);
+                        g2d.setFont(new Font("Serif", Font.BOLD, 20));
+                        g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 32, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 17);
+                    }
                 }
             }
         }
