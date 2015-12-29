@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.fiveinarow;
 
 import java.awt.Color;
 import java.awt.Dimension;

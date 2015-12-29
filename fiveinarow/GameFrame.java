@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.fiveinarow;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
