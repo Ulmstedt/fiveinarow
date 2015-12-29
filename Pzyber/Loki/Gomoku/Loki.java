@@ -229,7 +229,7 @@ public class Loki {
 
     public void registerMoveInDB(int[][] board, Point move)
     {
-        System.out.println("Loki: Registering move in DB: " + move.x + ":" + move.y + " ...");
+        //System.out.println("Loki: Registering move in DB: " + move.x + ":" + move.y + " ...");
 
         // Clone board.
         int[][] clonedBoard = cloneMatrix(board);
@@ -243,7 +243,7 @@ public class Loki {
         // Store previous board and the new move.
         gameData.add(new GameData(clonedBoard, move, id));
 
-        System.out.println("Loki: Move registered.");
+        //System.out.println("Loki: Move registered.");
     }
 
     // TODO: Fix support for rectangular board rotation.
@@ -356,12 +356,11 @@ public class Loki {
         long startTime = System.currentTimeMillis();
 
         for(GameData gd : gameData){
-            //int searchWidth = width;
-            //int searchHeight = height;
-            int searchWidth = 15;
-            int searchHeight = 15;
-            //while(searchWidth > 1 && searchHeight > 1)
-            while(searchWidth > 13 && searchHeight > 13)
+            int searchWidth = width;
+            int searchHeight = height;
+            //int searchWidth = 15;
+            //int searchHeight = 15;
+            while(searchWidth > 1 && searchHeight > 1)
             {
                 storeDataInDB(gd, winnerID, searchWidth, searchHeight);
 
@@ -401,13 +400,14 @@ public class Loki {
         // Search for patterns and add statistics to data.
         // TODO: Add rectangular pattern search.
         // TODO: Add search limits.
-        //int searchWidth = width;
-        //int searchHeight = height;
-        int searchWidth = 15;
-        int searchHeight = 15;
+        int searchWidth = width;
+        int searchHeight = height;
+        //int searchWidth = 15;
+        //int searchHeight = 15;
+        int searchLevelOfResult = searchWidth;
         ArrayList<MoveData> resultData;
-        //while(searchWidth > 1 && searchHeight > 1)
-        while(searchWidth > 13 && searchHeight > 13)
+        boolean positiveSearchResultFound = false;
+        while(!positiveSearchResultFound && searchWidth > 1 && searchHeight > 1)
         {
             int[][] clonedBoard = cloneMatrix(board);
             resultData = getDataFromDB(clonedBoard, id, searchWidth, searchHeight);
@@ -423,6 +423,14 @@ public class Loki {
                         existingMoveData.addWins(md.getWins());
                     } else {
                         data.put(move, md);
+
+
+                        // Check if any win chance.
+                        if(md.thoughtResult() > 0)
+                        {
+                            searchLevelOfResult = searchWidth;
+                            positiveSearchResultFound = true;
+                        }
                     }
                 }
             }
@@ -463,6 +471,7 @@ public class Loki {
             }
         }
 
+        System.out.println("Loki DEBUG search level of results: " + searchLevelOfResult);
         System.out.println("Loki DEBUG Result percentage: " + bestThoughtResult);
 
         // Select the best move and return a LokiResult, if more then one then randomly select one of them.
