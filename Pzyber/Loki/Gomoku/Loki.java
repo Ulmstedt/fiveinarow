@@ -141,23 +141,23 @@ public class Loki {
                                     // Get inner move.
                                     String[] posDot = m.split("\\.");
                                     String[] pos = posDot[0].split("_");
-                                    Point innerMove = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
+                                    Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
+
+                                    // Scale move to board.
+                                    move = new Point(startX + move.x, startY + move.y);
 
                                     // Rotate move.
                                     if(i != 1) {
                                         for (int k = 4 - i + 1; k < 4; k++) {
-                                            innerMove = rotateMoveAntiClockwise(innerMove);
+                                            move = rotateMoveAntiClockwise(move);
                                         }
                                     }
                                     else
                                     {
                                         for (int k = 4 - i; k < 4; k++) {
-                                            innerMove = rotateMoveClockwise(innerMove);
+                                            move = rotateMoveClockwise(move);
                                         }
                                     }
-
-                                    // Scale move to board.
-                                    Point move = new Point(startX + innerMove.x, startY + innerMove.y);
 
                                     // Get draws, losses and wins.
                                     int[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
@@ -294,7 +294,7 @@ public class Loki {
                 while (endX < width) {
                     // System.out.println("startX = " + startX + " movex = " + move.x + " endX = " + endX + " startY = " + startY + " novey = " + move.y + " endY = " + endY); // TODO: REMOVE DEBUG
                     if(hasAdjecentMoveOrFullSize(board, startX, startY, endX, endY) && move.x >= startX && move.x <= endX  && move.y >= startY && move.y <= endY) {
-                        System.out.println("PASSED");
+                        // System.out.println("PASSED"); // TODO: REMOVE DEBUG
 
                         // Calculate hash.
                         String hash = calculateHash(board, 0, startX, startY, endX, endY);
@@ -358,10 +358,10 @@ public class Loki {
         for(GameData gd : gameData){
             //int searchWidth = width;
             //int searchHeight = height;
-            int searchWidth = 5;
-            int searchHeight = 5;
+            int searchWidth = 15;
+            int searchHeight = 15;
             //while(searchWidth > 1 && searchHeight > 1)
-            while(searchWidth > 4 && searchHeight > 4 && searchWidth <= 5 && searchHeight <= 5)
+            while(searchWidth > 13 && searchHeight > 13)
             {
                 storeDataInDB(gd, winnerID, searchWidth, searchHeight);
 
@@ -403,11 +403,11 @@ public class Loki {
         // TODO: Add search limits.
         //int searchWidth = width;
         //int searchHeight = height;
-        int searchWidth = 5;
-        int searchHeight = 5;
+        int searchWidth = 15;
+        int searchHeight = 15;
         ArrayList<MoveData> resultData;
         //while(searchWidth > 1 && searchHeight > 1)
-        while(searchWidth > 4 && searchHeight > 4 && searchWidth <= 5 && searchHeight <= 5)
+        while(searchWidth > 13 && searchHeight > 13)
         {
             int[][] clonedBoard = cloneMatrix(board);
             resultData = getDataFromDB(clonedBoard, id, searchWidth, searchHeight);
