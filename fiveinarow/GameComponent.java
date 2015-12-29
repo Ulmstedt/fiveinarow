@@ -221,7 +221,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
             if (!SwingUtilities.isRightMouseButton(e)) {
                 //game.setTile(e.getX() / Constants.SQUARE_SIZE, e.getY() / Constants.SQUARE_SIZE, 1);
                 Player currentPlayer = game.getCurrentPlayer();
-                if (!(currentPlayer instanceof AIPlayer)) {
+                if (!(currentPlayer instanceof AIPlayer) && !(currentPlayer instanceof JimmyAI)) {
                     currentPlayer.setCurrentChoice(e.getX() / Constants.SQUARE_SIZE, (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE);
                     //System.out.println("XX: " + e.getX() / Constants.SQUARE_SIZE + " YY: " + (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE);
                     currentPlayer.playRound();
