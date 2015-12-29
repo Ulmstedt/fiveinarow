@@ -7,24 +7,14 @@ package fiveinarow;
 public class AIPlayer extends Player {
 
     private int width, height;
-    //private int[][] basePointGrid;
 
     public AIPlayer(int id, Game game) {
         super(id, game);
         width = game.getWidth();
         height = game.getHeight();
         pointGrid = new int[width][height];
-        //basePointGrid = new int[width][height];
-        //initBasePointGrid();
     }
 
-    /*private void initBasePointGrid() {
-     for (int i = 0; i < width; i++) {
-     for (int j = 0; j < height; j++) {
-     basePointGrid[i][j] = (i <= width - i - 1 ? i : width - i - 1) + (j <= height - j - 1 ? j : height - j - 1);
-     }
-     }
-     }*/
     private void resetPointGrid() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -71,7 +61,6 @@ public class AIPlayer extends Player {
 
     public int[][] calculatePointGrid(int[][] board) {
         resetPointGrid();
-        //int[][] pointGrid = this.getPointGrid().clone();
         int[][] tempBoard = board.clone(); //Copy board
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < game.getWidth(); x++) {
@@ -155,14 +144,12 @@ public class AIPlayer extends Player {
                         case 1:
                             //Check rows
                             if (x <= width - 3 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p) {
-                                System.out.println("row");
                                 return p;
                             }
                             break;
                         case 2:
                             //Check columns
                             if (y <= height - 3 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p)) {
-                                System.out.println("col");
                                 return p;
                             }
                             break;
@@ -170,7 +157,6 @@ public class AIPlayer extends Player {
                             //Check diagonals \
                             if (x <= width - 3 && y <= height - 3
                                     && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p)) {
-                                System.out.println("diagon 1");
                                 return p;
                             }
                             break;
@@ -178,7 +164,6 @@ public class AIPlayer extends Player {
                             //Check diagonals /
                             if (x >= 2 && y <= height - 3
                                     && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p)) {
-                                System.out.println("diagon 2");
                                 return p;
                             }
                             break;
@@ -198,14 +183,12 @@ public class AIPlayer extends Player {
                         case 1:
                             //Check rows
                             if (x <= width - 2 && tiles[x][y] == p && tiles[x + 1][y] == p) {
-                                System.out.println("row");
                                 return p;
                             }
                             break;
                         case 2:
                             //Check columns
                             if (y <= height - 2 && (tiles[x][y] == p && tiles[x][y + 1] == p)) {
-                                System.out.println("col");
                                 return p;
                             }
                             break;
@@ -213,7 +196,6 @@ public class AIPlayer extends Player {
                             //Check diagonals \
                             if (x <= width - 2 && y <= height - 2
                                     && (tiles[x][y] == p && tiles[x + 1][y + 1] == p)) {
-                                System.out.println("diagon 1");
                                 return p;
                             }
                             break;
@@ -221,7 +203,6 @@ public class AIPlayer extends Player {
                             //Check diagonals /
                             if (x >= 1 && y <= height - 2
                                     && (tiles[x][y] == p && tiles[x - 1][y + 1] == p)) {
-                                System.out.println("diagon 2");
                                 return p;
                             }
                             break;

@@ -227,7 +227,9 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                     currentPlayer.playRound();
                 }
             } else {
-                game.setTile(e.getX() / Constants.SQUARE_SIZE, (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE, 0);
+                if (game.DEBUG) {
+                    game.setTile(e.getX() / Constants.SQUARE_SIZE, (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE, 0);
+                }
             }
         } else {
             game.resetGame();
