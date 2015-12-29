@@ -80,9 +80,9 @@ public class Loki {
     private String getBoardAsString(int[][] board, int flippidby, int startX, int startY, int endX, int endY){
         String result = "";
 
-        for(int i = startX; i < endX; i++)
+        for(int i = startX; i <= endX; i++)
         {
-            for(int j = startY; j < endY; j++)
+            for(int j = startY; j <= endY; j++)
             {
                 int value = board[i][j];
 
@@ -116,11 +116,11 @@ public class Loki {
 
             for(int j = 0; j < maxID; j++) { // Flip id loop.
                 int startX = 0;
-                int endX = searchWidth;
+                int endX = searchWidth - 1;
                 int startY = 0;
-                int endY = searchHeight;
-                while (endY < height) {
-                    while (endX < width) {
+                int endY = searchHeight - 1;
+                while (endY < height - 1) {
+                    while (endX < width - 1) {
                         // Calculate hash.
                         String hash = calculateHash(board, j, startX, startY, endX, endY);
 
@@ -137,10 +137,16 @@ public class Loki {
                                     Point innerMove = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
                                     // Rotate move.
-                                    for (int k = 4 - i + 1; k < 4; k++) {
-                                        System.out.println("Loki DEBUG before move rotation: " + i + "|" + j + " " +innerMove.x + "|" + innerMove.y);
-                                        innerMove = rotateMoveAntiClockwise(innerMove);
-                                        System.out.println("Loki DEBUG after move rotation: " + i + "|" + j + " " +innerMove.x + "|" + innerMove.y);
+                                    if(i != 1) {
+                                        for (int k = 4 - i + 1; k < 4; k++) {
+                                            innerMove = rotateMoveAntiClockwise(innerMove);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int k = 4 - i; k < 4; k++) {
+                                            innerMove = rotateMoveClockwise(innerMove);
+                                        }
                                     }
 
                                     // Scale move to board.
@@ -250,12 +256,13 @@ public class Loki {
             }*/
 
             int startX = 0;
-            int endX = searchWidth;
+            int endX = searchWidth - 1;
             int startY = 0;
-            int endY = searchHeight;
-            while (endY < height) {
-                while (endX < width) {
-                    if(move.x >= startX && move.x <= endX && move.y >= startY && move.y <= endY) {
+            int endY = searchHeight - 1;
+            while (endY < height - 1) {
+                while (endX < width - 1) {
+                    if(move.x >= startX && move.x <= endX  && move.y >= startY && move.y <= endY) {
+                        System.out.println("startX="+startX+" endX="+endX+" move.x="+move.x+" startY="+startY+" move.y="+move.y+" endY="+endY);
                         // Calculate hash.
                         String hash = calculateHash(board, 0, startX, startY, endX, endY);
 
@@ -300,7 +307,7 @@ public class Loki {
                 }
 
                 startX = 0;
-                endX = searchWidth;
+                endX = searchWidth - 1;
                 startY++;
                 endY++;
             }
