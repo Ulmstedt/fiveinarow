@@ -8,6 +8,15 @@ public class AIPlayer extends Player {
 
     private int width, height;
 
+    private final int WIN_SETUP_SCORE = 3000;
+    private final int WIN_BLOCK_SCORE = 800;
+    private final int FOUR_SETUP_SCORE = 100;
+    private final int FOUR_BLOCK_SCORE = 80;
+    private final int THREE_SETUP_SCORE = 30;
+    private final int THREE_BLOCK_SCORE = 20;
+    private final int TWO_SETUP_SCORE = 2;
+    private final int TWO_BLOCK_SCORE = 1;
+
     public AIPlayer(int id, Game game) {
         super(id, game);
         width = game.getWidth();
@@ -67,49 +76,46 @@ public class AIPlayer extends Player {
                         //Check if placement would give victory to any player
                         tempBoard[x][y] = p;
                         if (game.checkForWinner(tempBoard) == p) {
-                            pointGrid[x][y] += (p == ID ? 3000 : 800);
+                            pointGrid[x][y] += (p == ID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
                         }
-                        //Check each direction separately to count double setups
-                        for (int mode = 1; mode <= 4; mode++) {
-                            //Check setup for 4 in a row
-                            if (checkForFourSetupRows(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 80 : 60);
-                            }
-                            if (checkForFourSetupCols(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 80 : 60);
-                            }
-                            if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 80 : 60);
-                            }
-                            if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 80 : 60);
-                            }
-                            //Check setup for 3 in a row
-                            if (checkForThreeSetupRows(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 20 : 10);
-                            }
-                            if (checkForThreeSetupCols(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 20 : 10);
-                            }
-                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 20 : 10);
-                            }
-                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 20 : 10);
-                            }
-                            //Check setup for 2 in a row
-                            if (checkForTwoSetupRows(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 2 : 1);
-                            }
-                            if (checkForTwoSetupCols(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 2 : 1);
-                            }
-                            if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 2 : 1);
-                            }
-                            if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
-                                pointGrid[x][y] += (p == ID ? 2 : 1);
-                            }
+                        //Check setup for 4 in a row
+                        if (checkForFourSetupRows(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+                        }
+                        if (checkForFourSetupCols(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+                        }
+                        if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+                        }
+                        if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+                        }
+                        //Check setup for 3 in a row
+                        if (checkForThreeSetupRows(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+                        }
+                        if (checkForThreeSetupCols(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+                        }
+                        if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+                        }
+                        if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+                        }
+                        //Check setup for 2 in a row
+                        if (checkForTwoSetupRows(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+                        }
+                        if (checkForTwoSetupCols(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+                        }
+                        if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+                        }
+                        if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
+                            pointGrid[x][y] += (p == ID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
                         }
                         tempBoard[x][y] = 0;
 
