@@ -1,6 +1,8 @@
 package fiveinarow;
 
-import java.awt.Color;
+import Pzyber.Loki.Gomoku.Loki;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -12,10 +14,12 @@ public class Game {
     private final ArrayList<GameListener> gameListeners;
     private final ArrayList<Player> playerList;
     private Player currentPlayer;
+    Loki loki;
 
     private int width, height;
     private int winner, roundCount;
     private boolean pointsGiven;
+    private int playerStarted = 0;
 
     //Used for random colors on the board
     private Color[][] colors;
@@ -37,10 +41,11 @@ public class Game {
     public void tick() {
         if (winner == 0) {
             if (isBoardFull()) {
+                loki.storeGameDataInDB(0);
                 resetGame();
             }
             winner = checkForWinner(board);
-            if (currentPlayer instanceof AIPlayer && winner == 0) {
+            if ((currentPlayer instanceof AIPlayer || currentPlayer instanceof JimmyAI) && winner == 0) {
                 currentPlayer.playRound();
             }
             notifyListeners();
@@ -48,6 +53,8 @@ public class Game {
             if (!pointsGiven) {
                 playerList.get(winner - 1).givePoint();
                 pointsGiven = true;
+                loki.storeGameDataInDB(winner);
+                resetGame();
             }
             winner = 0;
             //resetGame();
@@ -57,12 +64,25 @@ public class Game {
 
     private void initGame() {
         this.board = new int[width][height];
-        //playerList.add(new Player(1, this));
-        playerList.add(new AIPlayer(1, this));
-        playerList.add(new AIPlayer(2, this));
-        playerList.add(new AIPlayer(3, this));
 
-        currentPlayer = playerList.get(0);
+        //playerList.add(new Player(1, this));
+        //playerList.add(new AIPlayer(2, this));
+
+        loki = new Loki("D:/temp/Loki2", width + 1, 2);
+        playerList.add(new Player(1, this));
+        playerList.add(new AIPlayer(2, this));
+        //playerList.add(new JimmyAI(2, this));
+        //playerList.add(new JimmyAI(2, this));
+
+        //playerList.add(new AIPlayer(1, this));
+        //playerList.add(new AIPlayer(2, this));
+
+        //playerList.add(new AIPlayer(1, this));
+        //playerList.add(new AIPlayer(2, this));
+        //playerList.add(new AIPlayer(3, this));
+
+        playerStarted = 0;
+        currentPlayer = playerList.get(playerStarted);
         colors = generateRandomColors(); //Random colors
     }
 
@@ -76,7 +96,13 @@ public class Game {
         pointsGiven = false;
         roundCount = 0;
         colors = generateRandomColors(); //Random colors
-    }
+
+        playerStarted++;
+        if(playerStarted == playerList.size()) {
+            playerStarted = 0;
+        }
+        currentPlayer = playerList.get(playerStarted);
+}
 
     private Color[][] generateRandomColors() {
         Color[][] color = new Color[width][height];
@@ -201,6 +227,7 @@ public class Game {
     public void setTile(int x, int y, int value) {
 
         board[x][y] = value;
+        loki.registerMoveInDB(board, new Point(x, y));
     }
 
     public void incrementRoundCount() {
