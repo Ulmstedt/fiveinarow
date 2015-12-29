@@ -44,7 +44,7 @@ public class MoveData {
     }
 
     public float thoughtResult(){
-        long total = draws * 2 + losses + wins;
+        long total = draws + losses + wins;
         return ((float)draws + (float)wins) / (float)total;
     }
 

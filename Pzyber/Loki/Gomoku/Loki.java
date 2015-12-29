@@ -44,6 +44,13 @@ public class Loki {
         this.width = size;
         this.height = size ;
         this.maxID = maxID;
+
+        // TODO: REMOVE THIS DEBUG.
+        /*int[][] board = new int[size][size];
+        board[7][7] = 1;
+        Point move = new Point(7,8);
+        GameData gd = new GameData(board, move, 1);
+        storeDataInDB(gd, 1, 2, 2);*/
     }
 
     private String calculateHash(int[][] board, int flippidwith, int startX, int startY, int endX, int endY) {
@@ -159,6 +166,7 @@ public class Loki {
                                     int wins = dbData[2];
 
                                     // Add MoveData to data list.
+                                    //data.add(new MoveData(move, draws, losses, wins));
                                     data.add(new MoveData(move, draws, losses, wins));
                                 }
                             }
@@ -284,15 +292,20 @@ public class Loki {
             int endY = searchHeight - 1;
             while (endY < height) {
                 while (endX < width) {
+                    // System.out.println("startX = " + startX + " movex = " + move.x + " endX = " + endX + " startY = " + startY + " novey = " + move.y + " endY = " + endY); // TODO: REMOVE DEBUG
                     if(hasAdjecentMoveOrFullSize(board, startX, startY, endX, endY) && move.x >= startX && move.x <= endX  && move.y >= startY && move.y <= endY) {
+                        System.out.println("PASSED");
+
                         // Calculate hash.
                         String hash = calculateHash(board, 0, startX, startY, endX, endY);
 
                         // Descale move to board.
-                        move = new Point(move.x - startX, move.y - startY);
+                        //System.out.println(move); // TODO: REMOVE DEBUG
+                        Point descaledMove = new Point(move.x - startX, move.y - startY);
+                        //System.out.println(descaledMove); // TODO: REMOVE DEBUG
 
                         // Store data to database.
-                        String filePath = path + "/" + hash + "/" + move.x + "_" + move.y + ".txt";
+                        String filePath = path + "/" + hash + "/" + descaledMove.x + "_" + descaledMove.y + ".txt";
                         if(Files.exists(Paths.get(path + "/" + hash))) {
                             if(Files.exists(Paths.get(filePath))){
                                 // Get draws, losses and wins.
@@ -345,15 +358,16 @@ public class Loki {
         for(GameData gd : gameData){
             //int searchWidth = width;
             //int searchHeight = height;
-            int searchWidth = 15;
-            int searchHeight = 15;
+            int searchWidth = 5;
+            int searchHeight = 5;
             //while(searchWidth > 1 && searchHeight > 1)
-            //{
+            while(searchWidth > 4 && searchHeight > 4 && searchWidth <= 5 && searchHeight <= 5)
+            {
                 storeDataInDB(gd, winnerID, searchWidth, searchHeight);
 
-                //searchWidth--;
-                //searchHeight--;
-            //}
+                searchWidth--;
+                searchHeight--;
+            }
         }
 
         gameData.clear();
@@ -389,11 +403,12 @@ public class Loki {
         // TODO: Add search limits.
         //int searchWidth = width;
         //int searchHeight = height;
-        int searchWidth = 15;
-        int searchHeight = 15;
+        int searchWidth = 5;
+        int searchHeight = 5;
         ArrayList<MoveData> resultData;
         //while(searchWidth > 1 && searchHeight > 1)
-        //{
+        while(searchWidth > 4 && searchHeight > 4 && searchWidth <= 5 && searchHeight <= 5)
+        {
             int[][] clonedBoard = cloneMatrix(board);
             resultData = getDataFromDB(clonedBoard, id, searchWidth, searchHeight);
 
@@ -412,9 +427,9 @@ public class Loki {
                 }
             }
 
-            //searchWidth--;
-            //searchHeight--;
-        //}
+            searchWidth--;
+            searchHeight--;
+        }
 
         // Build board of conceived data.
         float bestThoughtResult = 0;
