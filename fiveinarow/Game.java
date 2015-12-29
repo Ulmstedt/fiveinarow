@@ -70,16 +70,16 @@ public class Game {
     private void initGame() {
         this.board = new int[width][height];
 
+        if (LOKI_ENABLED) {
+            loki = new Loki(LOKI_DB_PATH, width + 1, 2); // Last parameter is the player count.
+        }
+
         playerList.add(new Player(1, this));
         //playerList.add(new AIPlayer(1, this));
 		//playerList.add(new JimmyAI(1, this));
         playerList.add(new AIPlayer(2, this));
 		//playerList.add(new JimmyAI(2, this));
         //playerList.add(new AIPlayer(3, this));
-
-        if (LOKI_ENABLED) {
-            loki = new Loki(LOKI_DB_PATH, width + 1, playerList.size());
-        }
 
         playerStarted = 0;
         currentPlayer = playerList.get(playerStarted);
