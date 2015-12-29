@@ -77,7 +77,7 @@ public class Loki {
         return newMatrix;
     }
 
-    private String getBoardAsString(int[][] board, int flippidwith, int startX, int startY, int endX, int endY){
+    private String getBoardAsString(int[][] board, int flippidby, int startX, int startY, int endX, int endY){
         String result = "";
 
         for(int i = startX; i < endX; i++)
@@ -87,9 +87,9 @@ public class Loki {
                 int value = board[i][j];
 
                 // Flipp id.
-                if(value > 0)
+                if(flippidby > 0)
                 {
-                    value += flippidwith;
+                    value += flippidby;
                     if(value > maxID)
                     {
                         value = value - maxID;
@@ -111,7 +111,7 @@ public class Loki {
             // Rotate board.
             for(int j = 4 - i; j < 4; j++)
             {
-                rotateBoardClockwise(board);
+                board = rotateBoardClockwise(board);
             }
 
             for(int j = 0; j < maxID; j++) { // Flip id loop.
@@ -134,12 +134,13 @@ public class Loki {
                                     // Get inner move.
                                     String[] posDot = m.split("\\.");
                                     String[] pos = posDot[0].split("_");
-                                    int test = Integer.parseInt(pos[0]);
                                     Point innerMove = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
                                     // Rotate move.
-                                    for (int k = 4 - i; k < 4; k++) {
+                                    for (int k = 4 - i + 1; k < 4; k++) {
+                                        System.out.println("Loki DEBUG before move rotation: " + i + "|" + j + " " +innerMove.x + "|" + innerMove.y);
                                         innerMove = rotateMoveAntiClockwise(innerMove);
+                                        System.out.println("Loki DEBUG after move rotation: " + i + "|" + j + " " +innerMove.x + "|" + innerMove.y);
                                     }
 
                                     // Scale move to board.
@@ -209,7 +210,7 @@ public class Loki {
     }
 
     // TODO: Fix support for rectangular board rotation.
-    private void rotateBoardClockwise(int[][] board){
+    private int[][] rotateBoardClockwise(int[][] board){
         int size = width - 1;
         int[][] rotated = new int[size][size];
 
@@ -218,6 +219,8 @@ public class Loki {
                 rotated[i][j] = board[size - j - 1][i];
             }
         }
+
+        return rotated;
     }
 
     // TODO: Fix support for rectangular move rotation.
@@ -254,7 +257,7 @@ public class Loki {
                 while (endX < width) {
                     if(move.x >= startX && move.x <= endX && move.y >= startY && move.y <= endY) {
                         // Calculate hash.
-                        String hash = calculateHash(board, id, startX, startY, endX, endY);
+                        String hash = calculateHash(board, 0, startX, startY, endX, endY);
 
                         // Descale move to board.
                         move = new Point(move.x - startX, move.y - startY);
@@ -270,11 +273,13 @@ public class Loki {
                                 int wins = dbData[2];
 
                                 // Write data to file.
+                                System.out.println("Loki DEBUG store filePath: " + filePath); // TODO: REMOVE DEBUG
                                 writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
                             }
                             else
                             {
                                 // Write data to file.
+                                System.out.println("Loki DEBUG store filePath: " + filePath); // TODO: REMOVE DEBUG
                                 writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
                             }
                         }
@@ -285,6 +290,7 @@ public class Loki {
                             hashedFolder.mkdirs();
 
                             // Write data to file.
+                            System.out.println("Loki DEBUG store filePath: " + filePath); // TODO: REMOVE DEBUG
                             writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
                         }
                     }
@@ -310,15 +316,15 @@ public class Loki {
         for(GameData gd : gameData){
             //int searchWidth = width;
             //int searchHeight = height;
-            int searchWidth = 2;
-            int searchHeight = 2;
-            while(searchWidth > 1 && searchHeight > 1)
-            {
+            int searchWidth = 15;
+            int searchHeight = 15;
+            //while(searchWidth > 1 && searchHeight > 1)
+            //{
                 storeDataInDB(gd, winnerID, searchWidth, searchHeight);
 
-                searchWidth--;
-                searchHeight--;
-            }
+                //searchWidth--;
+                //searchHeight--;
+            //}
         }
 
         gameData.clear();
@@ -354,11 +360,11 @@ public class Loki {
         // TODO: Add search limits.
         //int searchWidth = width;
         //int searchHeight = height;
-        int searchWidth = 2;
-        int searchHeight = 2;
+        int searchWidth = 15;
+        int searchHeight = 15;
         ArrayList<MoveData> resultData;
-        while(searchWidth > 1 && searchHeight > 1)
-        {
+        //while(searchWidth > 1 && searchHeight > 1)
+        //{
             int[][] clonedBoard = cloneMatrix(board);
             resultData = getDataFromDB(clonedBoard, id, searchWidth, searchHeight);
 
@@ -377,9 +383,9 @@ public class Loki {
                 }
             }
 
-            searchWidth--;
-            searchHeight--;
-        }
+            //searchWidth--;
+            //searchHeight--;
+       // }
 
         // Build board of conceived data.
         float bestThoughtResult = 0;
