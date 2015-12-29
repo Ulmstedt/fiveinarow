@@ -16,7 +16,7 @@ public class JimmyAI extends Player {
         pointGrid = new int[width][height];
 
         // Add new Loki.
-        this.loki = game.loki;
+        this.loki = game.getLoki();
     }
 
     @Override
