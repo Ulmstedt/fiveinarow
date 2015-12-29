@@ -22,7 +22,7 @@ public class Game {
 
     private int[][] board;
 
-    public final boolean DEBUG = false;
+    public final boolean DEBUG = true;
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();

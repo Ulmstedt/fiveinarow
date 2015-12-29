@@ -23,8 +23,6 @@ public class AIPlayer extends Player {
         }
     }
 
-    
-
     @Override
     public void playRound() {
         //Start time of AI's turn
@@ -73,11 +71,43 @@ public class AIPlayer extends Player {
                         }
                         //Check each direction separately to count double setups
                         for (int mode = 1; mode <= 4; mode++) {
-                            if (checkForFourSetup(tempBoard, mode, x, y) == p) {
+                            //Check setup for 4 in a row
+                            if (checkForFourSetupRows(tempBoard, x, y) == p) {
                                 pointGrid[x][y] += (p == ID ? 80 : 60);
-                            } else if (checkForThreeSetup(tempBoard, mode, x, y) == p) {
+                            }
+                            if (checkForFourSetupCols(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 80 : 60);
+                            }
+                            if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 80 : 60);
+                            }
+                            if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 80 : 60);
+                            }
+                            //Check setup for 3 in a row
+                            if (checkForThreeSetupRows(tempBoard, x, y) == p) {
                                 pointGrid[x][y] += (p == ID ? 20 : 10);
-                            } else if (checkForTwoSetup(tempBoard, mode, x, y) == p) {
+                            }
+                            if (checkForThreeSetupCols(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 20 : 10);
+                            }
+                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 20 : 10);
+                            }
+                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 20 : 10);
+                            }
+                            //Check setup for 2 in a row
+                            if (checkForTwoSetupRows(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 2 : 1);
+                            }
+                            if (checkForTwoSetupCols(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 2 : 1);
+                            }
+                            if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
+                                pointGrid[x][y] += (p == ID ? 2 : 1);
+                            }
+                            if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
                                 pointGrid[x][y] += (p == ID ? 2 : 1);
                             }
                         }
@@ -92,125 +122,168 @@ public class AIPlayer extends Player {
         return pointGrid;
     }
 
-    /*
-     Checks if a player has setup to win.
-     Modes: 1 = rows, 2 = columns, 3 = diagonal \, 4 = diagonal /
-     Returns 0 if no setup, or the player ID if someone has a setup.
-     */
-    public int checkForFourSetup(int[][] tiles, int mode, int xc, int yc) {
+    // #################
+    // ## Four setups ##
+    // #################
+    public int checkForFourSetupRows(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 3 > 0 ? xc - 3 : 0); x < (yc + 3 < width - 4 ? yc + 3 : width - 4); x++) {
-                for (int y = (yc - 3 > 0 ? yc - 3 : 0); y < (yc + 3 < height - 4 ? yc + 3 : height - 4); y++) {
-                    switch (mode) {
-                        case 1:
-                            //Check rows
-                            if (x <= width - 4 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p && tiles[x + 3][y] == p) {
-                                return p;
-                            }
-                            break;
-                        case 2:
-                            //Check columns
-                            if (y <= height - 4 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p && tiles[x][y + 3] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 3:
-                            //Check diagonals \
-                            if (x <= width - 4 && y <= height - 4
-                                    && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 4:
-                            //Check diagonals /
-                            if (x >= 3 && y <= height - 4
-                                    && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p)) {
-                                return p;
-                            }
-                            break;
-                    }
+            for (int x = (xc - 3 > 0 ? xc - 3 : 0); x <= (xc < width - 4 ? xc : width - 4); x++) {
+                //Check rows
+                if (tiles[x][yc] == p && tiles[x + 1][yc] == p && tiles[x + 2][yc] == p && tiles[x + 3][yc] == p) {
+                    return p;
                 }
             }
         }
-
         return 0;
     }
 
-    public int checkForThreeSetup(int[][] tiles, int mode, int xc, int yc) {
+    public int checkForFourSetupCols(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 2 > 0 ? xc - 2 : 0); x < (yc + 2 < width - 3 ? yc + 2 : width - 3); x++) {
-                for (int y = (yc - 2 > 0 ? yc - 2 : 0); y < (yc + 2 < height - 3 ? yc + 2 : height - 3); y++) {
-                    switch (mode) {
-                        case 1:
-                            //Check rows
-                            if (x <= width - 3 && tiles[x][y] == p && tiles[x + 1][y] == p && tiles[x + 2][y] == p) {
-                                return p;
-                            }
-                            break;
-                        case 2:
-                            //Check columns
-                            if (y <= height - 3 && (tiles[x][y] == p && tiles[x][y + 1] == p && tiles[x][y + 2] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 3:
-                            //Check diagonals \
-                            if (x <= width - 3 && y <= height - 3
-                                    && (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 4:
-                            //Check diagonals /
-                            if (x >= 2 && y <= height - 3
-                                    && (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p)) {
-                                return p;
-                            }
-                            break;
-                    }
+            for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
+                //Check columns
+                if (tiles[xc][y] == p && tiles[xc][y + 1] == p && tiles[xc][y + 2] == p && tiles[xc][y + 3] == p) {
+                    return p;
                 }
             }
         }
-
         return 0;
     }
 
-    public int checkForTwoSetup(int[][] tiles, int mode, int xc, int yc) {
+    public int checkForFourSetupDiagonal1(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 1 > 0 ? xc - 1 : 0); x < (yc + 1 < width - 2 ? yc + 1 : width - 2); x++) {
-                for (int y = (yc - 1 > 0 ? yc - 1 : 0); y < (yc + 1 < height - 2 ? yc + 1 : height - 2); y++) {
-                    switch (mode) {
-                        case 1:
-                            //Check rows
-                            if (x <= width - 2 && tiles[x][y] == p && tiles[x + 1][y] == p) {
-                                return p;
-                            }
-                            break;
-                        case 2:
-                            //Check columns
-                            if (y <= height - 2 && (tiles[x][y] == p && tiles[x][y + 1] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 3:
-                            //Check diagonals \
-                            if (x <= width - 2 && y <= height - 2
-                                    && (tiles[x][y] == p && tiles[x + 1][y + 1] == p)) {
-                                return p;
-                            }
-                            break;
-                        case 4:
-                            //Check diagonals /
-                            if (x >= 1 && y <= height - 2
-                                    && (tiles[x][y] == p && tiles[x - 1][y + 1] == p)) {
-                                return p;
-                            }
-                            break;
+            for (int x = (xc - 3 > 0 ? xc - 3 : 0); x <= (xc < width - 4 ? xc : width - 4); x++) {
+                for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p) {
+                        return p;
                     }
                 }
             }
         }
+        return 0;
+    }
 
+    public int checkForFourSetupDiagonal2(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc > 3 ? xc : 3); x <= (xc + 3 < width - 1 ? xc + 3 : width - 1); x++) {
+                for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    // ##################
+    // ## Three setups ##
+    // ##################
+    public int checkForThreeSetupRows(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc - 2 > 0 ? xc - 2 : 0); x <= (xc < width - 3 ? xc : width - 3); x++) {
+                //Check rows
+                if (tiles[x][yc] == p && tiles[x + 1][yc] == p && tiles[x + 2][yc] == p) {
+                    return p;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForThreeSetupCols(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
+                //Check columns
+                if (tiles[xc][y] == p && tiles[xc][y + 1] == p && tiles[xc][y + 2] == p) {
+                    return p;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForThreeSetupDiagonal1(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc - 2 > 0 ? xc - 2 : 0); x <= (xc < width - 3 ? xc : width - 3); x++) {
+                for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForThreeSetupDiagonal2(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc > 2 ? xc : 2); x <= (xc + 2 < width - 1 ? xc + 2 : width - 1); x++) {
+                for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    // ################
+    // ## Two setups ##
+    // ################
+    public int checkForTwoSetupRows(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc - 1 > 0 ? xc - 1 : 0); x <= (xc < width - 2 ? xc : width - 2); x++) {
+                //Check rows
+                if (tiles[x][yc] == p && tiles[x + 1][yc] == p) {
+                    return p;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForTwoSetupCols(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
+                //Check columns
+                if ((tiles[xc][y] == p && tiles[xc][y + 1] == p)) {
+                    return p;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForTwoSetupDiagonal1(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc - 1 > 0 ? xc - 1 : 0); x <= (xc < width - 2 ? xc : width - 2); x++) {
+                for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int checkForTwoSetupDiagonal2(int[][] tiles, int xc, int yc) {
+        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+            for (int x = (xc > 1 ? xc : 1); x <= (xc + 1 < width - 1 ? xc + 1 : width - 1); x++) {
+                for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
+                    //Check diagonals \
+                    if (tiles[x][y] == p && tiles[x - 1][y + 1] == p) {
+                        return p;
+                    }
+                }
+            }
+        }
         return 0;
     }
 }
