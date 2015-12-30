@@ -2,6 +2,7 @@
  * Loki Learning AI
  *
  * Loki.java
+ * Created on 2015-12-28
  * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
@@ -324,27 +325,36 @@ public class Loki {
 
                     // Store data to database.
                     // TODO: Add SQL and Memory DB code.
-                    String filePath = path + "/" + hash + "/" + descaledMove.x + "_" + descaledMove.y + ".txt";
-                    if (Files.exists(Paths.get(path + "/" + hash))) {
-                        if (Files.exists(Paths.get(filePath))) {
-                            // Get draws, losses and wins.
-                            long[] dbData = readDataFromDBFile(filePath);
-                            long draws = dbData[0];
-                            long losses = dbData[1];
-                            long wins = dbData[2];
+                    if(dbType == DBType.MEMORY)
+                    {
 
-                            // Write data to file.
-                            writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
+                    }
+                    else if(dbType == DBType.FILE) {
+                        String filePath = path + "/" + hash + "/" + descaledMove.x + "_" + descaledMove.y + ".txt";
+                        if (Files.exists(Paths.get(path + "/" + hash))) {
+                            if (Files.exists(Paths.get(filePath))) {
+                                // Get draws, losses and wins.
+                                long[] dbData = readDataFromDBFile(filePath);
+                                long draws = dbData[0];
+                                long losses = dbData[1];
+                                long wins = dbData[2];
+
+                                // Write data to file.
+                                writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
+                            } else {
+                                // Write data to file.
+                                writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            }
                         } else {
-                            // Write data to file.
-                            writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            // Create hashed folder and write data to file..
+                            File hashedFolder = new File(path + "/" + hash);
+                            if (hashedFolder.mkdirs()) {
+                                writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            }
                         }
-                    } else {
-                        // Create hashed folder and write data to file..
-                        File hashedFolder = new File(path + "/" + hash);
-                        if (hashedFolder.mkdirs()) {
-                            writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
-                        }
+                    }
+                    else if(dbType == DBType.SQL){
+
                     }
                 }
 

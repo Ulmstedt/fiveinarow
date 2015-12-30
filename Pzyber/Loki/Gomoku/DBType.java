@@ -2,6 +2,7 @@
  * Loki Learning AI
  *
  * DBType.java
+ * Created by pzyber on 2015-12-30
  * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
@@ -11,6 +12,7 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * If you have questions, contact me at pzyber@pzyber.net
+ *
  */
 
 package Pzyber.Loki.Gomoku;
