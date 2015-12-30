@@ -188,10 +188,10 @@ public class Loki {
                                     }
 
                                     // Get draws, losses and wins.
-                                    int[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
-                                    int draws = dbData[0];
-                                    int losses = dbData[1];
-                                    int wins = dbData[2];
+                                    long[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
+                                    long draws = dbData[0];
+                                    long losses = dbData[1];
+                                    long wins = dbData[2];
 
                                     // Add MoveData to data list.
                                     data.add(new MoveData(move, draws, losses, wins));
@@ -228,20 +228,21 @@ public class Loki {
         return value > 0;
     }
 
-    private int[] readDataFromDBFile(String path) {
+    private long[] readDataFromDBFile(String path) {
         // Get draws, losses and wins.
-        int draws = 0;
-        int losses = 0;
-        int wins = 0;
+        long draws = 0;
+        long losses = 0;
+        long wins = 0;
         try {
             List<String> rows = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
-            draws = Integer.parseInt(rows.get(0));
-            losses = Integer.parseInt(rows.get(1));
-            wins = Integer.parseInt(rows.get(2));
+            draws = Long.parseLong(rows.get(0));
+            losses = Long.parseLong(rows.get(1));
+            wins = Long.parseLong(rows.get(2));
+
         } catch (IOException ignored) {
         }
 
-        return new int[]{draws, losses, wins};
+        return new long[]{draws, losses, wins};
     }
 
     private int[] readDataFromDBMemory() {
@@ -327,10 +328,10 @@ public class Loki {
                     if (Files.exists(Paths.get(path + "/" + hash))) {
                         if (Files.exists(Paths.get(filePath))) {
                             // Get draws, losses and wins.
-                            int[] dbData = readDataFromDBFile(filePath);
-                            int draws = dbData[0];
-                            int losses = dbData[1];
-                            int wins = dbData[2];
+                            long[] dbData = readDataFromDBFile(filePath);
+                            long draws = dbData[0];
+                            long losses = dbData[1];
+                            long wins = dbData[2];
 
                             // Write data to file.
                             writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
@@ -479,17 +480,17 @@ public class Loki {
     }
 
     // Write data to file.
-    private void writeDataToDBFile(String path, int winnerID, int id, int previousDraws, int previousLosses,
-                                   int previousWins) {
+    private void writeDataToDBFile(String path, int winnerID, int id, long previousDraws, long previousLosses,
+                                   long previousWins) {
         try {
             FileWriter fw = new FileWriter(path, false);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            bw.write(Integer.toString((winnerID == 0 ? 1 : 0) + previousDraws));    // Draw.
+            bw.write(Long.toString((winnerID == 0 ? 1 : 0) + previousDraws));    // Draw.
             bw.newLine();
-            bw.write(Integer.toString((winnerID == id ? 0 : 1) + previousLosses));   // Losses.
+            bw.write(Long.toString((winnerID == id ? 0 : 1) + previousLosses));   // Losses.
             bw.newLine();
-            bw.write(Integer.toString((winnerID == id ? 1 : 0) + previousWins));   // Wins.
+            bw.write(Long.toString((winnerID == id ? 1 : 0) + previousWins));   // Wins.
             bw.flush();
 
             bw.close();
