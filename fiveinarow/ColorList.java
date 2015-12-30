@@ -1,4 +1,4 @@
-package fiveinarow.fiveinarow;
+package fiveinarow;
 
 import java.awt.Color;
 import java.util.ArrayList;

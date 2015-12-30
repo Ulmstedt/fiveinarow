@@ -1,4 +1,4 @@
-package fiveinarow.fiveinarow;
+package fiveinarow;
 
 import Pzyber.Loki.Gomoku.Loki;
 import Pzyber.Loki.Gomoku.LokiResult;

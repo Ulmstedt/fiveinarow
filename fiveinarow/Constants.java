@@ -1,4 +1,4 @@
-package fiveinarow.fiveinarow;
+package fiveinarow;
 
 /**
  *

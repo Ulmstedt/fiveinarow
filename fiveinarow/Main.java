@@ -1,4 +1,4 @@
-package fiveinarow.fiveinarow;
+package fiveinarow;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
