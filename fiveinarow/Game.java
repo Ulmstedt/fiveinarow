@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * @author Sehnsucht
  */
 public class Game {
+
     private final ArrayList<GameListener> gameListeners;
     private final ArrayList<Player> playerList;
     private Player currentPlayer;
@@ -25,9 +26,9 @@ public class Game {
     private Color[][] colors;
 
     private int[][] board;
-    
+
     public final boolean DEBUG = true;
-	public static final boolean LOKI_ENABLED = true;
+    public static final boolean LOKI_ENABLED = true;
     public static final String LOKI_DB_PATH = "D:/temp/Loki";
 
     public Game(int width, int height) {
@@ -43,9 +44,9 @@ public class Game {
     public void tick() {
         if (winner == 0) {
             if (isBoardFull()) {
-				if (LOKI_ENABLED) {
-					loki.storeGameDataInDB(0);
-				}
+                if (LOKI_ENABLED) {
+                    loki.storeGameDataInDB(0);
+                }
                 resetGame();
             }
             winner = checkForWinner(board);
@@ -57,9 +58,9 @@ public class Game {
             if (!pointsGiven) {
                 playerList.get(winner - 1).givePoint();
                 pointsGiven = true;
-				if (LOKI_ENABLED) {
-					loki.storeGameDataInDB(winner);
-				}
+                if (LOKI_ENABLED) {
+                    loki.storeGameDataInDB(winner);
+                }
                 //resetGame();
             }
             winner = 0;
@@ -76,9 +77,9 @@ public class Game {
 
         playerList.add(new Player(1, this));
         //playerList.add(new AIPlayer(1, this));
-		//playerList.add(new JimmyAI(1, this));
+        //playerList.add(new JimmyAI(1, this));
         playerList.add(new AIPlayer(2, this));
-		//playerList.add(new JimmyAI(2, this));
+        //playerList.add(new JimmyAI(2, this));
         //playerList.add(new AIPlayer(3, this));
 
         playerStarted = 0;
@@ -97,13 +98,13 @@ public class Game {
         roundCount = 0;
         colors = generateRandomColors(); //Random colors
 
-		// Switch players.
+        // Switch players.
         playerStarted++;
-        if(playerStarted == playerList.size()) {
+        if (playerStarted == playerList.size()) {
             playerStarted = 0;
         }
         currentPlayer = playerList.get(playerStarted);
-	}
+    }
 
     private Color[][] generateRandomColors() {
         Color[][] color = new Color[width][height];
@@ -182,7 +183,7 @@ public class Game {
         return currentPlayer;
     }
 
-    public Loki getLoki(){
+    public Loki getLoki() {
         return loki;
     }
 
@@ -231,9 +232,9 @@ public class Game {
     // #############
     public void setTile(int x, int y, int value) {
         board[x][y] = value;
-		if (LOKI_ENABLED) {
-			loki.registerMoveInDB(board, new Point(x, y));
-		}
+        if (LOKI_ENABLED) {
+            loki.registerMoveInDB(board, new Point(x, y));
+        }
     }
 
     public void incrementRoundCount() {
