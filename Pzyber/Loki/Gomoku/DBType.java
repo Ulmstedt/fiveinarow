@@ -2,6 +2,7 @@
  * Loki Learning AI
  *
  * DBType.java
+ * Created by pzyber on 2015-12-30
  * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
@@ -16,7 +17,7 @@
 package Pzyber.Loki.Gomoku;
 
 public class DBType {
-    public static final int MEMORY = 0;
-    public static final int FILE = 1;
-    public static final int SQL = 2;
+    public static final byte MEMORY = 0;
+    public static final byte FILE = 1;
+    public static final byte SQL = 2;
 }

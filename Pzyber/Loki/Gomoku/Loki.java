@@ -2,6 +2,7 @@
  * Loki Learning AI
  *
  * Loki.java
+ * Created on 2015-12-28
  * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
@@ -17,11 +18,9 @@ package Pzyber.Loki.Gomoku;
 
 import java.awt.Point;
 import java.io.*;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +34,14 @@ public class Loki {
     private List<GameData> gameData = new ArrayList<>();
     private Random random = new Random();
 
+    // Memory DB.
+    private MemoryDB memoryDB;
+
     // Filesystem DB.
     private String path;
 
     // SQL DB.
-    private Statement stmt;
+    //private Statement stmt;
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -49,7 +51,9 @@ public class Loki {
         this.height = size;
         this.maxID = maxID;
 
-        this.dbType = DBType.MEMORY;
+        dbType = DBType.MEMORY;
+
+        memoryDB = new MemoryDB();
     }
 
     // Filesystem DB.
@@ -58,13 +62,16 @@ public class Loki {
         this.height = size;
         this.maxID = maxID;
 
-        this.dbType = DBType.FILE;
+        dbType = DBType.FILE;
 
         this.path = path;
+
+        float d = 1.0f / 3.0f;
+        System.out.println(d);
     }
 
     // My-SQL DB.
-    public Loki(InetAddress address, short port, String database, String username, String password, int size,
+   /* public Loki(InetAddress address, short port, String database, String username, String password, int size,
                 int maxID) {
         this.width = size;
         this.height = size;
@@ -80,9 +87,10 @@ public class Loki {
             stmt = con.createStatement();
         } catch (SQLException e) {
             // If error, fall back to memory db.
-            this.dbType = DBType.MEMORY;
+            dbType = DBType.MEMORY;
+            memoryDB = new MemoryDB();
         }
-    }
+    }*/
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -160,43 +168,41 @@ public class Loki {
                         // Calculate hash.
                         String hash = calculateHash(board, j, startX, startY, endX, endY);
 
-                        // TODO: Add SQL and Memory DB code.
-                        String baseHashPath = path + "/" + hash;
-                        if (Files.exists(Paths.get(baseHashPath))) {
-                            // Get list of available moves from Loki DB.
-                            File lokiDB = new File(baseHashPath);
-                            String[] availableMoves = lokiDB.list();
-                            if (availableMoves != null) {
-                                for (String m : availableMoves) {
-                                    // Get inner move.
-                                    String[] posDot = m.split("\\.");
-                                    String[] pos = posDot[0].split("_");
-                                    Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
+                        if (dbType == DBType.MEMORY) {
+                            ArrayList<MoveData> availableMoves = memoryDB.getAvailableMovesFromDB(hash, startX, startY, i, width);
+                            for (MoveData m : availableMoves) {
+                                // Add MoveData to data list.
+                                data.add(m);
+                            }
+                        } else if (dbType == DBType.FILE) {
+                            String baseHashPath = path + "/" + hash;
+                            if (Files.exists(Paths.get(baseHashPath))) {
+                                // Get list of available moves from Loki DB.
+                                File lokiDB = new File(baseHashPath);
+                                String[] availableMoves = lokiDB.list();
+                                if (availableMoves != null) {
+                                    for (String m : availableMoves) {
+                                        // Get inner move.
+                                        String[] posDot = m.split("\\.");
+                                        String[] pos = posDot[0].split("_");
+                                        Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
-                                    // Scale move to board.
-                                    move = new Point(startX + move.x, startY + move.y);
+                                        // Scale and rotate move.
+                                        move = Utils.scaleAndRotate(move, startX, startY, i, width);
 
-                                    // Rotate move.
-                                    if (i != 1) {
-                                        for (int k = 4 - i + 1; k < 4; k++) {
-                                            move = rotateMoveAntiClockwise(move);
-                                        }
-                                    } else {
-                                        for (int k = 4 - i; k < 4; k++) {
-                                            move = rotateMoveClockwise(move);
-                                        }
+                                        // Get draws, losses and wins.
+                                        long[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
+                                        long draws = dbData[0];
+                                        long losses = dbData[1];
+                                        long wins = dbData[2];
+
+                                        // Add MoveData to data list.
+                                        data.add(new MoveData(move, draws, losses, wins));
                                     }
-
-                                    // Get draws, losses and wins.
-                                    int[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
-                                    int draws = dbData[0];
-                                    int losses = dbData[1];
-                                    int wins = dbData[2];
-
-                                    // Add MoveData to data list.
-                                    data.add(new MoveData(move, draws, losses, wins));
                                 }
                             }
+                        } else if (dbType == DBType.SQL) {
+                            // TODO: Add SQL DB code.
                         }
 
                         startX++;
@@ -228,25 +234,21 @@ public class Loki {
         return value > 0;
     }
 
-    private int[] readDataFromDBFile(String path) {
+    private long[] readDataFromDBFile(String path) {
         // Get draws, losses and wins.
-        int draws = 0;
-        int losses = 0;
-        int wins = 0;
+        long draws = 0;
+        long losses = 0;
+        long wins = 0;
         try {
             List<String> rows = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
-            draws = Integer.parseInt(rows.get(0));
-            losses = Integer.parseInt(rows.get(1));
-            wins = Integer.parseInt(rows.get(2));
+            draws = Long.parseLong(rows.get(0));
+            losses = Long.parseLong(rows.get(1));
+            wins = Long.parseLong(rows.get(2));
+
         } catch (IOException ignored) {
         }
 
-        return new int[]{draws, losses, wins};
-    }
-
-    private int[] readDataFromDBMemory() {
-        // TODO: Fill with content.
-        return null;
+        return new long[]{draws, losses, wins};
     }
 
     private int[] readDataFromDBSQL() {
@@ -281,18 +283,6 @@ public class Loki {
         return rotated;
     }
 
-    // x = y, y = (size - 1) - x
-    @SuppressWarnings("SuspiciousNameCombination")
-    private Point rotateMoveAntiClockwise(Point move) {
-        return new Point(move.y, height - 1 - move.x);
-    }
-
-    // x = (size - 1) - y, y = x
-    @SuppressWarnings("SuspiciousNameCombination")
-    private Point rotateMoveClockwise(Point move) {
-        return new Point(width - 1 - move.y, move.x);
-    }
-
     private void storeDataInDB(GameData gd, int winnerID, int searchWidth, int searchHeight) {
         int[][] board = gd.getBoard();
         Point move = gd.getMove();
@@ -322,28 +312,34 @@ public class Loki {
                     Point descaledMove = new Point(move.x - startX, move.y - startY);
 
                     // Store data to database.
-                    // TODO: Add SQL and Memory DB code.
-                    String filePath = path + "/" + hash + "/" + descaledMove.x + "_" + descaledMove.y + ".txt";
-                    if (Files.exists(Paths.get(path + "/" + hash))) {
-                        if (Files.exists(Paths.get(filePath))) {
-                            // Get draws, losses and wins.
-                            int[] dbData = readDataFromDBFile(filePath);
-                            int draws = dbData[0];
-                            int losses = dbData[1];
-                            int wins = dbData[2];
+                    if (dbType == DBType.MEMORY) {
+                        memoryDB.addToDB(hash, descaledMove, winnerID == 0 ? MemoryDB.DRAW : (winnerID == id ?
+                                MemoryDB.WIN : MemoryDB.LOSS));
+                    } else if (dbType == DBType.FILE) {
+                        String filePath = path + "/" + hash + "/" + descaledMove.x + "_" + descaledMove.y + ".txt";
+                        if (Files.exists(Paths.get(path + "/" + hash))) {
+                            if (Files.exists(Paths.get(filePath))) {
+                                // Get draws, losses and wins.
+                                long[] dbData = readDataFromDBFile(filePath);
+                                long draws = dbData[0];
+                                long losses = dbData[1];
+                                long wins = dbData[2];
 
-                            // Write data to file.
-                            writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
+                                // Write data to file.
+                                writeDataToDBFile(filePath, winnerID, id, draws, losses, wins);
+                            } else {
+                                // Write data to file.
+                                writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            }
                         } else {
-                            // Write data to file.
-                            writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            // Create hashed folder and write data to file..
+                            File hashedFolder = new File(path + "/" + hash);
+                            if (hashedFolder.mkdirs()) {
+                                writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
+                            }
                         }
-                    } else {
-                        // Create hashed folder and write data to file..
-                        File hashedFolder = new File(path + "/" + hash);
-                        if (hashedFolder.mkdirs()) {
-                            writeDataToDBFile(filePath, winnerID, id, 0, 0, 0);
-                        }
+                    } else if (dbType == DBType.SQL) {
+                        // TODO: Add SQL DB code.
                     }
                 }
 
@@ -479,27 +475,23 @@ public class Loki {
     }
 
     // Write data to file.
-    private void writeDataToDBFile(String path, int winnerID, int id, int previousDraws, int previousLosses,
-                                   int previousWins) {
+    private void writeDataToDBFile(String path, int winnerID, int id, long previousDraws, long previousLosses,
+                                   long previousWins) {
         try {
             FileWriter fw = new FileWriter(path, false);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            bw.write(Integer.toString((winnerID == 0 ? 1 : 0) + previousDraws));    // Draw.
+            bw.write(Long.toString((winnerID == 0 ? 1 : 0) + previousDraws));    // Draw.
             bw.newLine();
-            bw.write(Integer.toString((winnerID == id ? 0 : 1) + previousLosses));   // Losses.
+            bw.write(Long.toString((winnerID == id ? 0 : 1) + previousLosses));   // Losses.
             bw.newLine();
-            bw.write(Integer.toString((winnerID == id ? 1 : 0) + previousWins));   // Wins.
+            bw.write(Long.toString((winnerID == id ? 1 : 0) + previousWins));   // Wins.
             bw.flush();
 
             bw.close();
             fw.close();
         } catch (IOException ignored) {
         }
-    }
-
-    private void writeDataToDBMemory(int winnerID, int id, int previousDraws, int previousLosses, int previousWins) {
-        // TODO: Fill with content.
     }
 
     private void writeDataToDBSQL(int winnerID, int id, int previousDraws, int previousLosses, int previousWins) {

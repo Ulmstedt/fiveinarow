@@ -2,6 +2,7 @@
  * Loki Learning AI
  *
  * GameData.java
+ * Created on 2015-12-28
  * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
