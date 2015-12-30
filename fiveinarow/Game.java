@@ -14,7 +14,7 @@ public class Game {
     private final ArrayList<GameListener> gameListeners;
     private final ArrayList<Player> playerList;
     private Player currentPlayer;
-    Loki loki;
+    private Loki loki;
 
     private int width, height;
     private int winner, roundCount;
@@ -27,8 +27,8 @@ public class Game {
     private int[][] board;
     
     public final boolean DEBUG = true;
-	public static final boolean LOKI_ENABLED = false;
-    public static final String LOKIDB_PATH = "D:/temp/Loki";
+	public static final boolean LOKI_ENABLED = true;
+    public static final String LOKI_DB_PATH = "D:/temp/Loki";
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -69,9 +69,10 @@ public class Game {
 
     private void initGame() {
         this.board = new int[width][height];
-		if (LOKI_ENABLED) {
-			loki = new Loki(LOKIDB_PATH, width + 1, playerList.size());
-		}
+
+        if (LOKI_ENABLED) {
+            loki = new Loki(LOKI_DB_PATH, width + 1, 2); // Last parameter is the player count.
+        }
 
         playerList.add(new Player(1, this));
         //playerList.add(new AIPlayer(1, this));
@@ -179,6 +180,10 @@ public class Game {
     // #############
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public Loki getLoki(){
+        return loki;
     }
 
     public int getNumberOfPlayers() {

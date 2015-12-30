@@ -16,7 +16,7 @@ public class JimmyAI extends Player {
         pointGrid = new int[width][height];
 
         // Add new Loki.
-        this.loki = game.loki;
+        this.loki = game.getLoki();
     }
 
     @Override
@@ -24,6 +24,7 @@ public class JimmyAI extends Player {
         // Let Loki decide what move to play.
         int[][] board = game.getBoard();
         LokiResult lr = loki.thinkOfAMove(board);
+        pointGrid = lr.getCalculatedDataRoundedScaled(3000);
         Point move = lr.getMove();
         game.setTile(move.x, move.y, ID);
         game.incrementRoundCount();

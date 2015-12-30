@@ -1,7 +1,8 @@
-/** Loki Learning AI
+/**
+ * Loki Learning AI
  *
  * MoveData.java
- * Version Alpha
+ * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015 Jimmy Nordström.
@@ -20,48 +21,43 @@ public class MoveData {
     private long draws, losses, wins;
     private Point move;
 
-    public MoveData(Point move, long draws, long losses, long wins)
-    {
+    public MoveData(Point move, long draws, long losses, long wins) {
         this.move = move;
         this.draws = draws;
         this.losses = losses;
         this.wins = wins;
     }
 
-    public void addDraws(long amount)
-    {
+    public void addDraws(long amount) {
         draws += amount;
     }
 
-    public void addLosses(long amount)
-    {
+    public void addLosses(long amount) {
         losses += amount;
     }
 
-    public void addWins(long amount)
-    {
+    public void addWins(long amount) {
         wins += amount;
     }
 
-    public float thoughtResult(){
-        long total = draws * 2 + losses + wins;
-        return ((float)draws + (float)wins) / (float)total;
+    public float thoughtResult() {
+        long total = draws + losses + wins;
+        return ((float) draws + (float) wins) / (float) total;
     }
 
-    public long getDraws(){
+    public long getDraws() {
         return draws;
     }
 
-    public long getLosses(){
+    public long getLosses() {
         return losses;
     }
 
-    public Point getMove()
-    {
+    public Point getMove() {
         return move;
     }
 
-    public long getWins(){
+    public long getWins() {
         return wins;
     }
 }
