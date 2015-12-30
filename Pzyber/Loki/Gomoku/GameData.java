@@ -1,7 +1,8 @@
-/** Loki Learning AI
+/**
+ * Loki Learning AI
  *
  * GameData.java
- * Version Alpha
+ * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015 Jimmy Nordström.
@@ -21,21 +22,21 @@ public class GameData {
     private int[][] board;
     private Point move;
 
-    public GameData(int[][] board, Point move, int id){
+    public GameData(int[][] board, Point move, int id) {
         this.board = board;
         this.move = move;
         this.id = id;
     }
 
-    public int[][] getBoard(){
+    public int[][] getBoard() {
         return board;
     }
 
-    public Point getMove(){
+    public Point getMove() {
         return move;
     }
 
-    public int getID(){
+    public int getID() {
         return id;
     }
 }

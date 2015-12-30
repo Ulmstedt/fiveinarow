@@ -1,7 +1,8 @@
-/** Loki Learning AI
+/**
+ * Loki Learning AI
  *
  * LokiResult.java
- * Version Alpha
+ * Version 0.2.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015 Jimmy Nordström.
@@ -21,32 +22,32 @@ public class LokiResult {
     private int width, height;
     private Point move;
 
-    public LokiResult(Point move, float[][] calculatedData, int width, int height){
+    public LokiResult(Point move, float[][] calculatedData, int width, int height) {
         this.move = move;
         this.calculatedData = calculatedData;
         this.width = width;
         this.height = height;
     }
 
-    public float[][] getCalculatedData(){
+    public float[][] getCalculatedData() {
         return calculatedData;
     }
 
-    public int[][] getCalculatedDataRounded(){
+    public int[][] getCalculatedDataRounded() {
         return getCalculatedDataRoundedScaled(0);
     }
 
-    public int[][] getCalculatedDataRoundedScaled(int scale){
+    public int[][] getCalculatedDataRoundedScaled(int scale) {
         int[][] calculatedDataRounded = new int[width][height];
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 calculatedDataRounded[i][j] = Math.round(calculatedData[i][j] * scale);
             }
         }
         return calculatedDataRounded;
     }
 
-    public Point getMove(){
+    public Point getMove() {
         return move;
     }
 }
