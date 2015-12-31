@@ -45,8 +45,7 @@ public class MoveData {
 
     public float thoughtResult() {
         long total = draws + losses + wins;
-        if(aggressive)
-        {
+        if (aggressive) {
             return (float) wins / (float) total;
         }
         return ((float) draws + (float) wins) / (float) total;
