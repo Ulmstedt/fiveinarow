@@ -46,10 +46,11 @@ public class Loki {
     //------------------------------------------------------------------------------------------------------------------
 
     // Memory DB.
-    public Loki(int size, int maxID) {
+    public Loki(int size, int maxID, boolean aggressive) {
         this.width = size;
         this.height = size;
         this.maxID = maxID;
+        MoveData.aggressive = aggressive;
 
         dbType = DBType.MEMORY;
 
@@ -57,10 +58,11 @@ public class Loki {
     }
 
     // Filesystem DB.
-    public Loki(String path, int size, int maxID) {
+    public Loki(String path, int size, int maxID, boolean aggressive) {
         this.width = size;
         this.height = size;
         this.maxID = maxID;
+        MoveData.aggressive = aggressive;
 
         dbType = DBType.FILE;
 
