@@ -6,7 +6,7 @@ This is the main development repository for Loki Lerning AI (Gomoku) created by 
 # Based on fiveinarow
 Simple 5 in a row game against AI by Mattias Ulmstedt.
 
-Includes the following AIs
+fiveinarow includes the following AIs
 --------------------------------------------------------
 AIPlayer                  by Mattias Ulmstedt (Ulmstedt)
 
