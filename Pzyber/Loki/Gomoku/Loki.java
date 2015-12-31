@@ -111,20 +111,6 @@ public class Loki {
         return data;
     }
 
-    private boolean hasAdjecentMoveOrFullSize(int[][] board, int startX, int startY, int endX, int endY) {
-        if (startX == 0 && startY == 0 && endX == width - 1 && endY == height - 1) {
-            return true;
-        }
-
-        int value = 0;
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                value += board[i][j];
-            }
-        }
-        return value > 0;
-    }
-
     public void registerMoveInDB(int[][] board, Point move) {
         // Clone board.
         int[][] clonedBoard = Utils.cloneMatrix(board);
@@ -150,8 +136,8 @@ public class Loki {
         int endY = searchHeight - 1;
         while (endY < height) {
             while (endX < width) {
-                if (hasAdjecentMoveOrFullSize(board, startX, startY, endX, endY) && move.x >= startX &&
-                        move.x <= endX && move.y >= startY && move.y <= endY) {
+                if (Utils.hasAdjecentMoveOrFullSize(board, startX, startY, endX, endY, width, height) &&
+                        move.x >= startX && move.x <= endX && move.y >= startY && move.y <= endY) {
                     // Calculate hash.
                     String hash = Utils.calculateHash(board, 0, startX, startY, endX, endY, maxID);
 
@@ -159,8 +145,8 @@ public class Loki {
                     Point descaledMove = new Point(move.x - startX, move.y - startY);
 
                     // Store data to database.
-                    lokiDB.addToDB(hash, descaledMove, winnerID == 0 ? MemoryDB.DRAW : (winnerID == id ?
-                            MemoryDB.WIN : MemoryDB.LOSS));
+                    lokiDB.addToDB(hash, descaledMove, winnerID == 0 ? MemoryDB.DRAW : (winnerID == id ? MemoryDB.WIN :
+                            MemoryDB.LOSS));
                 }
 
                 startX++;
