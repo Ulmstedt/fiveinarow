@@ -19,6 +19,72 @@ package Pzyber.Loki.Gomoku;
 import java.awt.Point;
 
 public class Utils {
+    public static String calculateHash(int[][] board, int flippidwith, int startX, int startY, int endX, int endY, int maxID) {
+        return getBoardAsString(board, flippidwith, startX, startY, endX, endY, maxID);
+
+        /*String stringboard = getBoardAsString(board, flippidwith, startX, startY, endX, endY);
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(stringboard.getBytes("UTF-8"));
+            byte[] digest = md.digest();
+            System.out.println(new String(digest, "UTF-8"));
+            return new String(digest, "UTF-8");
+        }
+        catch (NoSuchAlgorithmException e) {
+            return stringboard;
+        }
+        catch (UnsupportedEncodingException e) {
+            return stringboard;
+        }
+
+        return stringboard;*/
+    }
+
+    public static int[][] cloneMatrix(int[][] matrix) {
+        int[][] newMatrix = new int[matrix.length][];
+
+        for (int i = 0; i < matrix.length; i++) {
+            newMatrix[i] = matrix[i].clone();
+        }
+
+        return newMatrix;
+    }
+
+    private static String getBoardAsString(int[][] board, int flippidby, int startX, int startY, int endX, int endY, int maxID) {
+        String result = "";
+
+        for (int i = startX; i <= endX; i++) {
+            for (int j = startY; j <= endY; j++) {
+                int value = board[i][j];
+
+                // Flipp id.
+                if (flippidby > 0) {
+                    value += flippidby;
+                    if (value > maxID) {
+                        value = value - maxID;
+                    }
+                }
+
+                result += Integer.toString(value);
+            }
+        }
+
+        return result;
+    }
+
+    public static int[][] rotateBoardClockwise(int[][] board, int size) {
+        int[][] rotated = new int[size][size];
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                rotated[i][j] = board[size - j - 1][i];
+            }
+        }
+
+        return rotated;
+    }
+
     // x = y, y = (size - 1) - x
     @SuppressWarnings("SuspiciousNameCombination")
     public static Point rotateMoveAntiClockwise(Point move, int size) {
