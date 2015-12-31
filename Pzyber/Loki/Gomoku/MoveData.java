@@ -19,6 +19,8 @@ package Pzyber.Loki.Gomoku;
 import java.awt.Point;
 
 public class MoveData {
+    protected static boolean aggressive = false;
+
     private long draws, losses, wins;
     private Point move;
 
@@ -43,6 +45,10 @@ public class MoveData {
 
     public float thoughtResult() {
         long total = draws + losses + wins;
+        if(aggressive)
+        {
+            return (float) wins / (float) total;
+        }
         return ((float) draws + (float) wins) / (float) total;
     }
 
