@@ -73,6 +73,20 @@ public class Utils {
         return result;
     }
 
+    public static boolean hasAdjecentMoveOrFullSize(int[][] board, int startX, int startY, int endX, int endY, int width, int height) {
+        if (startX == 0 && startY == 0 && endX == width - 1 && endY == height - 1) {
+            return true;
+        }
+
+        int value = 0;
+        for (int i = startX; i <= endX; i++) {
+            for (int j = startY; j <= endY; j++) {
+                value += board[i][j];
+            }
+        }
+        return value > 0;
+    }
+
     public static int[][] rotateBoardClockwise(int[][] board, int size) {
         int[][] rotated = new int[size][size];
 
