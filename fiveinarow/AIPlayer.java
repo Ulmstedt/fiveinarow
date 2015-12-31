@@ -4,7 +4,7 @@ package fiveinarow;
  *
  * @author Sehnsucht
  */
-public class AIPlayer extends Player {
+public class AIPlayer extends Player implements IAI {
 
     private int width, height;
 

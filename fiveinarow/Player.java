@@ -1,10 +1,12 @@
 package fiveinarow;
 
+import java.awt.Point;
+
 /**
  *
  * @author Sehnsucht
  */
-public class Player {
+public class Player implements IPlayer{
 
     protected int ID, score, currX, currY;
     protected Game game;
@@ -55,11 +57,21 @@ public class Player {
         score++;
     }
 
+    @Override
+    public void moveMade(Point move) {
+
+    }
+
     public void playRound() {
         if (game.getTile(currX, currY) == 0) {
             game.setTile(currX, currY, ID);
             game.incrementRoundCount();
             game.nextPlayer();
         }
+    }
+
+    @Override
+    public void roundEnded(int winner){
+
     }
 }
