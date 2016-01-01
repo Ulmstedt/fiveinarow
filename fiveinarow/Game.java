@@ -33,7 +33,7 @@ public class Game {
         this.width = width;
         this.height = height;
         this.winner = 0;
-        this.winnerHistory = new WinnerHistory(20);
+        this.winnerHistory = new WinnerHistory(50);
         initGame();
     }
 
