@@ -24,8 +24,7 @@ public class AIJohan extends Player implements IAI
 
 	@Override
 	public void playRound() {
-		//Point p = aiGetNext(game.getBoard(), ID, ID == 1 ? 2 : 1, 0);
-		Point p = aiGetNext(game.getBoard(), 2, 1, 0);
+		Point p = aiGetNext(game.getBoard(), ID, ID == 1 ? 2 : 1, 0);
 
 		while (p == null || 0 != game.getBoard()[p.y][p.x])
 		{

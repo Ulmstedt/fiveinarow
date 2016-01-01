@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryDB {
+public class MemoryDB implements ILokiDB {
     public static final byte DRAW = 0;
     public static final byte LOSS = 1;
     public static final byte WIN = 2;
@@ -34,7 +34,8 @@ public class MemoryDB {
         db = new HashMap<>();
     }
 
-    public void addToDB(String hash, Point move, short result) {
+    @Override
+    public void addToDB(String hash, Point move, byte result) {
         if (db.containsKey(hash)) {
             // Get inner database.
             Map<Point, long[]> dbInner = db.get(hash);
@@ -42,9 +43,9 @@ public class MemoryDB {
             if (dbInner.containsKey(move)) {
                 // Get draws, losses and wins.
                 long[] dbData = dbInner.get(move);
-                dbData[DRAWS] = dbData[DRAWS] + (result == DRAW ? +1 : 0);
-                dbData[LOSSES] = dbData[LOSSES] + (result == LOSS ? +1 : 0);
-                dbData[WINS] = dbData[WINS] + (result == WIN ? +1 : 0);
+                dbData[DRAWS] = dbData[DRAWS] + (result == DRAW ? 1 : 0);
+                dbData[LOSSES] = dbData[LOSSES] + (result == LOSS ? 1 : 0);
+                dbData[WINS] = dbData[WINS] + (result == WIN ? 1 : 0);
 
                 // Store with new stats.
                 dbInner.remove(move);
@@ -73,6 +74,7 @@ public class MemoryDB {
         }
     }
 
+    @Override
     public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
 
