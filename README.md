@@ -10,6 +10,6 @@ fiveinarow includes the following AIs
 --------------------------------------------------------
 AIPlayer                  by Mattias Ulmstedt (Ulmstedt)
 
-AILoki (Loki Learning AI) by Jimmy Nordström (pzyber)
+AILoki (Loki AI) by Jimmy Nordström (pzyber)
 
 AIJohan                   by Johan Rydh
