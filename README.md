@@ -1,4 +1,10 @@
 # fiveinarow
-Simple 5 in a row game with AI by Mattias Ulmstedt.
+Simple 5 in a row game against AI by Mattias Ulmstedt.
 
-Includes Loki Learning AI by Jimmy Nordström (Pzyber).
+Includes the following AIs
+--------------------------------------------------------
+AIPlayer                  by Mattias Ulmstedt (Ulmstedt)
+
+AILoki (Loki AI) by Jimmy Nordström (pzyber)
+
+AIJohan                   by Johan Rydh
