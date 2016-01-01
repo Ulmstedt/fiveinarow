@@ -16,6 +16,7 @@ public class Player implements IPlayer{
         this.ID = id;
         this.score = 0;
         this.game = game;
+        pointGrid = new int[game.getWidth()][game.getHeight()];
     }
 
     public void setCurrentChoice(int x, int y) {

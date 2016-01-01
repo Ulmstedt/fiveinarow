@@ -75,6 +75,7 @@ public class Game {
         this.board = new int[width][height];
 
         //playerList.add(new Player(1, this));
+        //playerList.add(new Player(2, this));
         playerList.add(new AIPlayer(1, this));
         //playerList.add(new AILoki(1, this));
         //playerList.add(new AIPlayer(2, this));

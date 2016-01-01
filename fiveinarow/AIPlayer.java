@@ -21,7 +21,6 @@ public class AIPlayer extends Player implements IAI {
         super(id, game);
         width = game.getWidth();
         height = game.getHeight();
-        pointGrid = new int[width][height];
     }
 
     private void resetPointGrid() {
@@ -51,7 +50,7 @@ public class AIPlayer extends Player implements IAI {
         System.out.println(timeSpent + " ms.");
 
         //For debugging
-        calculatePointGrid(game.getBoard());
+        //calculatePointGrid(game.getBoard());
     }
 
     private void findBestMove() {
