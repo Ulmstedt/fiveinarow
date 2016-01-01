@@ -1,5 +1,5 @@
-# Loki Learning AI (Gomoku)
-This is the main development repository for Loki Lerning AI (Gomoku) created by Jimmy Nordström (pzyber)
+# LOKI AI (Gomoku)
+This is the main development repository for LOKI AI (Gomoku) created by Jimmy Nordström (pzyber)
 
 --------------------------------------------------------
 
