@@ -15,7 +15,8 @@ public class AILoki extends Player implements IAI{
         pointGrid = new int[width][height];
 
         // Add new Loki.
-        loki = new Loki(width, game.getNumberOfPlayers());
+        loki = new Loki(width, game.getNumberOfPlayers(), false); // Memory DB
+        //loki = new Loki("D:/Temp/Loki", width, game.getNumberOfPlayers(), false); // Folder DB
     }
 
     @Override
