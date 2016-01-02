@@ -19,7 +19,7 @@ public class GameFrame extends JFrame {
     //JPanel gamePanel;
 
     public GameFrame(Game game) {
-        super("2DGamer");
+        super("Five in a row");
         this.game = game;
         this.gameComponent = new GameComponent(game);
 
@@ -31,7 +31,7 @@ public class GameFrame extends JFrame {
 
         this.add(gameComponent);
         
-        this.setResizable(true);
+        this.setResizable(false);
         this.pack();
         this.setLocation(600, 200);
         this.setVisible(true);
