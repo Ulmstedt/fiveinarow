@@ -145,7 +145,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         //Draw round number
         g2d.setColor(Color.BLACK);
         g2d.drawString("Round: " + game.getRoundCount(), width / 2 - 30, 14);
-        
+
         //Draw scores and stats
         g2d.setColor(Color.BLACK);
         //Total
@@ -178,11 +178,10 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         //Player 2
 //        g2d.setColor(ColorList.colors.get(1));
 //        g2d.drawString("Player 2: " + player2ScoreTotal + " (" + player2PercentTotalString + "%)", 200, height - 5);
-        
         int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
         int highestScore = game.getPlayerList().get(1).findHighestScore();
 
-        if (game.DEBUG) {
+        if (game.DEBUG_LEVEL >= 1) {
             //Draw heatmap of bots decision
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
@@ -211,7 +210,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                         g2d.setFont(new Font("Serif", Font.BOLD, 50));
                         g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
                     }
-                    if (game.DEBUG) {
+                    if (game.DEBUG_LEVEL >= 2) {
                         //Draw AI's  score grid (for debugging)
                         g2d.setColor(Color.BLACK);
                         g2d.setFont(new Font("Serif", Font.BOLD, 16));
@@ -253,7 +252,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                     currentPlayer.playRound();
                 }
             } else {
-                if (game.DEBUG) {
+                if (game.DEBUG_LEVEL >= 1) {
                     game.setTile(e.getX() / Constants.SQUARE_SIZE, (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE, 0);
                 }
             }

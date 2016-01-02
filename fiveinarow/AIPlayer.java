@@ -21,7 +21,7 @@ public class AIPlayer extends Player implements IAI {
     private final int TWO_SETUP_SCORE = 2;
     private final int TWO_BLOCK_SCORE = 1;
     private final double SIMULATION_INTENSITY = 0.5; //Lower value simulates more cases
-    private final int SIMULATION_DEPTH = 3; //How many rounds in the future that is simulated
+    private final int SIMULATION_DEPTH = 7; //How many rounds in the future that is simulated
 
     public AIPlayer(int id, Game game) {
         super(id, game);
@@ -94,7 +94,7 @@ public class AIPlayer extends Player implements IAI {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //Check if score is high enough, and if so simulate for playing (x,y), and only simulate if its atleast a 4 setup
-                if (pointGrid[x][y] >= THREE_BLOCK_SCORE && pointGrid[x][y] >= (SIMULATION_INTENSITY * pointGrid[p.x][p.y])) {
+                if (pointGrid[x][y] >= TWO_BLOCK_SCORE && pointGrid[x][y] >= (SIMULATION_INTENSITY * pointGrid[p.x][p.y])) {
                     pointsToSimulate++;
                 }
             }
@@ -245,7 +245,7 @@ public class AIPlayer extends Player implements IAI {
                             }
                         } else {
                             if (game.checkForWinner(tempBoard) == p) {
-                                tempPointGrid[x][y] += (p == ID ? WIN_BLOCK_SCORE : WIN_SETUP_SCORE);
+                                tempPointGrid[x][y] += (p == ID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
                             }
                             //Check setup for 4 in a row
                             if (checkForFourSetupRows(tempBoard, x, y) == p) {

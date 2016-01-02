@@ -25,7 +25,7 @@ public class Game {
 
     private int[][] board;
 
-    public final boolean DEBUG = true;
+    public final int DEBUG_LEVEL = 1; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
