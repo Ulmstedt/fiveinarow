@@ -32,7 +32,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
     public GameComponent(Game game) {
         this.game = game;
         this.width = Constants.SQUARE_SIZE * game.getWidth() + Constants.LINE_THICKNESS;
-        this.height = Constants.SQUARE_SIZE * game.getHeight() + Constants.PADDING_TOP + Constants.LINE_THICKNESS;
+        this.height = Constants.SQUARE_SIZE * game.getHeight() + Constants.PADDING_TOP + Constants.LINE_THICKNESS + Constants.PADDING_BOTTOM;
         addMouseListener(this);
         addKeyBindings();
         ColorList.initColors();
@@ -145,18 +145,43 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         //Draw round number
         g2d.setColor(Color.BLACK);
         g2d.drawString("Round: " + game.getRoundCount(), width / 2 - 30, 14);
-        //Draw scores
-        //Player 1
-        g2d.setColor(ColorList.colors.get(0));
-        g2d.drawString("Player 1: " + game.getPlayerList().get(0).getScore(), width - 160, 14);
-        //Player 2
-        g2d.setColor(ColorList.colors.get(1));
-        g2d.drawString("Player 1: " + game.getPlayerList().get(1).getScore(), width - 80, 14);
 
+        //Draw scores and stats
+        g2d.setColor(Color.BLACK);
+        //Total
+        int player1ScoreTotal = game.getPlayerList().get(0).getScore();
+        int player2ScoreTotal = game.getPlayerList().get(1).getScore();
+        double player1PercentTotal = ((player1ScoreTotal + player2ScoreTotal) == 0 ? 0 : ((double) player1ScoreTotal / (player1ScoreTotal + player2ScoreTotal)) * 100);
+        double player2PercentTotal = ((player1ScoreTotal + player2ScoreTotal) == 0 ? 0 : ((double) player2ScoreTotal / (player1ScoreTotal + player2ScoreTotal)) * 100);
+        String player1PercentTotalString = String.format("%.1f", player1PercentTotal);
+        String player2PercentTotalString = String.format("%.1f", player2PercentTotal);
+        String player1StringTotal = "P1: " + player1ScoreTotal + " (" + player1PercentTotalString + "%)";
+        String player2StringTotal = "P2: " + player2ScoreTotal + " (" + player2PercentTotalString + "%)";
+
+        WinnerHistory winnerHistory = game.getWinnerHistory();
+        //Recent
+        int player1ScoreRecent = (winnerHistory.getWinnerCount().get(1) == null ? 0 : winnerHistory.getWinnerCount().get(1));
+        int player2ScoreRecent = (winnerHistory.getWinnerCount().get(2) == null ? 0 : winnerHistory.getWinnerCount().get(2));
+        double player1PercentRecent = ((player1ScoreRecent + player2ScoreRecent) == 0 ? 0 : ((double) player1ScoreRecent / (player1ScoreRecent + player2ScoreRecent)) * 100);
+        double player2PercentRecent = ((player1ScoreRecent + player2ScoreRecent) == 0 ? 0 : ((double) player2ScoreRecent / (player1ScoreRecent + player2ScoreRecent)) * 100);
+        String player1PercentRecentString = String.format("%.1f", player1PercentRecent);
+        String player2PercentRecentString = String.format("%.1f", player2PercentRecent);
+        String player1StringRecent = "P1: " + player1ScoreRecent + " (" + player1PercentRecentString + "%)";
+        String player2StringRecent = "P2: " + player2ScoreRecent + " (" + player2PercentRecentString + "%)";
+
+        g2d.drawString("Total:  " + player1StringTotal + " / " + player2StringTotal + "  |  Last " + winnerHistory.getHistoryLength() + " games:  " + player1StringRecent + " / " + player2StringRecent, 3, height - 5);
+
+        //Player 1
+//        g2d.setColor(ColorList.colors.get(0));
+//        g2d.drawString("Player 1: " + player1ScoreTotal + " (" + player1PercentTotalString + "%)", 50, height - 5);
+        //g2d.drawString("Player 1: " + "50" + "%", 50, height - 5);
+        //Player 2
+//        g2d.setColor(ColorList.colors.get(1));
+//        g2d.drawString("Player 2: " + player2ScoreTotal + " (" + player2PercentTotalString + "%)", 200, height - 5);
         int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
         int highestScore = game.getPlayerList().get(1).findHighestScore();
 
-        if (game.DEBUG) {
+        if (game.DEBUG_LEVEL >= 1) {
             //Draw heatmap of bots decision
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
@@ -168,7 +193,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         //Draw square lines
         g2d.setColor(Color.BLACK);
         for (int i = 0; i < width; i += Constants.SQUARE_SIZE) {
-            g2d.fillRect(i, Constants.PADDING_TOP, Constants.LINE_THICKNESS, height - Constants.PADDING_TOP);
+            g2d.fillRect(i, Constants.PADDING_TOP, Constants.LINE_THICKNESS, height - Constants.PADDING_TOP - Constants.PADDING_BOTTOM);
         }
         for (int i = 0; i < height; i += Constants.SQUARE_SIZE) {
             g2d.fillRect(0, i + Constants.PADDING_TOP, width, Constants.LINE_THICKNESS);
@@ -185,11 +210,11 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                         g2d.setFont(new Font("Serif", Font.BOLD, 50));
                         g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
                     }
-                    if (game.DEBUG) {
+                    if (game.DEBUG_LEVEL >= 2) {
                         //Draw AI's  score grid (for debugging)
                         g2d.setColor(Color.BLACK);
-                        g2d.setFont(new Font("Serif", Font.BOLD, 20));
-                        g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 32, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 17);
+                        g2d.setFont(new Font("Serif", Font.BOLD, 16));
+                        g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 28, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 16);
                     }
                 }
             }
@@ -227,7 +252,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                     currentPlayer.playRound();
                 }
             } else {
-                if (game.DEBUG) {
+                if (game.DEBUG_LEVEL >= 1) {
                     game.setTile(e.getX() / Constants.SQUARE_SIZE, (e.getY() - Constants.PADDING_TOP) / Constants.SQUARE_SIZE, 0);
                 }
             }
