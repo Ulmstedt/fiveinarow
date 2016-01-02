@@ -78,6 +78,23 @@ public class AIPlayer extends Player implements IAI {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
+    static final int[][] setupDiaAt55 = new int[][]{
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
 
     private int width, height;
 
@@ -108,26 +125,12 @@ public class AIPlayer extends Player implements IAI {
         return newPointGrid;
     }
 
-    /*
-     for (int x = 0; x < width; x++) {
-     for (int y = 0; y < height; y++) {
-     //Check if score is high enough, and if so simulate for playing (x,y), and only simulate if its atleast a 4 setup
-     if (pointGrid[x][y] >= FOUR_BLOCK_SCORE && pointGrid[x][y] >= (SIMULATION_INTENSITY * pointGrid[p.x][p.y])) { // && !(x == p.x && y == p.y)
-     System.out.println("Simulating new point (" + ++pointsSimulated + ")");
-     int[][] tempBoard = Utils.cloneMatrix(game.getBoard());
-     tempBoard[x][y] = this.ID;
-     int simulatedWinner = simulateGame(tempBoard, this.ID, SIMULATION_DEPTH);
-     if (simulatedWinner != 0 && simulatedWinner != this.ID) {
-     System.out.println("Simulated winner found");
-     currX = x;
-     currY = y;
-     }
-     }
-     }
-     }
-     */
     @Override
     public void playRound() {
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("Setup " + (checkForSetupDiagonal1(AIPlayer.invertMatrix(AIPlayer.setupDiaAt55), 5, 5, 4, 1) ? "found" : "not found"));
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
         System.out.println("###### START OF ROUND #######################");
         //Start time of AI's turn
         long startTime = System.currentTimeMillis();
@@ -240,163 +243,161 @@ public class AIPlayer extends Player implements IAI {
         return new Point(bestX, bestY);
     }
 
-    /*
-     expludeID = 0 -> check setups for all players
-     expludeID = X -> Dont check for setups for player X
-     */
     public int[][] calculatePointGrid(int[][] board, int playerID, boolean defensive) {
         //resetPointGrid();
-        int[][] tempPointGrid = newPointGrid();
-        int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = 0; x < game.getWidth(); x++) {
-                for (int y = 0; y < game.getHeight(); y++) {
-                    if (board[x][y] == 0) {
-                        //Debug this position:
-                        final int debugX = 5, debugY = 5;
-                        //Check if placement would give victory to any player
-                        tempBoard[x][y] = p;
-                        if (!defensive) {
-                            if (game.checkForWinner(tempBoard) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "WIN_SETUP_SCORE" : "WIN_BLOCK_SCORE"));
-                                }
-                            }
-                            //Check setup for 4 in a row
-                            if (checkForFourSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "FOUR_SETUP_SCORE ROW" : "FOUR_BLOCK_SCORE ROW"));
-                                }
-                            }
-                            if (checkForFourSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "FOUR_SETUP_SCORE COL" : "FOUR_BLOCK_SCORE COL"));
-                                }
-                            }
-                            if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "FOUR_SETUP_SCORE DIA1" : "FOUR_BLOCK_SCORE DIA1"));
-                                }
-                            }
-                            if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "FOUR_SETUP_SCORE DIA2" : "FOUR_BLOCK_SCORE DIA2"));
-                                }
-                            }
-                            //Check setup for 3 in a row
-                            if (checkForThreeSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "THREE_SETUP_SCORE ROW" : "THREE_BLOCK_SCORE ROW"));
-                                }
-                            }
-                            if (checkForThreeSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "THREE_SETUP_SCORE COL" : "THREE_BLOCK_SCORE COL"));
-                                }
-                            }
-                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "THREE_SETUP_SCORE DIA1" : "THREE_BLOCK_SCORE DIA1"));
-                                }
-                            }
-                            if (checkForThreeSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "THREE_SETUP_SCORE DIA2" : "THREE_BLOCK_SCORE DIA2"));
-                                }
-                            }
-                            //Check setup for 2 in a row
-                            if (checkForTwoSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "TWO_SETUP_SCORE ROW" : "TWO_BLOCK_SCORE ROW"));
-                                }
-                            }
-                            if (checkForTwoSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "TWO_SETUP_SCORE COL" : "TWO_BLOCK_SCORE COL"));
-                                }
-                            }
-                            if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "TWO_SETUP_SCORE DIA1" : "TWO_BLOCK_SCORE DIA1"));
-                                }
-                            }
-                            if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
-                                if (x == debugX && y == debugY) {
-                                    System.out.println((p == playerID ? "TWO_SETUP_SCORE DIA2" : "TWO_BLOCK_SCORE DIA2"));
-                                }
-                            }
-                        } else {
-                            if (game.checkForWinner(tempBoard) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
-                            }
-                            //Check setup for 4 in a row
-                            if (checkForFourSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
-                            }
-                            if (checkForFourSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
-                            }
-                            if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
-                            }
-                            if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
-                            }
-                            //Check setup for 3 in a row
-                            if (checkForThreeSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
-                            }
-                            if (checkForThreeSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
-                            }
-                            if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
-                            }
-                            if (checkForThreeSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
-                            }
-                            //Check setup for 2 in a row
-                            if (checkForTwoSetupRows(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
-                            }
-                            if (checkForTwoSetupCols(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
-                            }
-                            if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
-                            }
-                            if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
-                                tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
-                            }
-                        }
-                        tempBoard[x][y] = 0;
+        return new int[][]{{0}};
+        /*
+         int[][] tempPointGrid = newPointGrid();
+         int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
+         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
+         for (int x = 0; x < game.getWidth(); x++) {
+         for (int y = 0; y < game.getHeight(); y++) {
+         if (board[x][y] == 0) {
+         //Debug this position:
+         final int debugX = 5, debugY = 5;
+         //Check if placement would give victory to any player
+         tempBoard[x][y] = p;
+         if (!defensive) {
+         if (game.checkForWinner(tempBoard) == p) {
+         tempPointGrid[x][y] += (p == playerID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "WIN_SETUP_SCORE" : "WIN_BLOCK_SCORE"));
+         }
+         }
+         //Check setup for 4 in a row
+         if (checkForFourSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "FOUR_SETUP_SCORE ROW" : "FOUR_BLOCK_SCORE ROW"));
+         }
+         }
+         if (checkForFourSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "FOUR_SETUP_SCORE COL" : "FOUR_BLOCK_SCORE COL"));
+         }
+         }
+         if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "FOUR_SETUP_SCORE DIA1" : "FOUR_BLOCK_SCORE DIA1"));
+         }
+         }
+         if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_SETUP_SCORE : FOUR_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "FOUR_SETUP_SCORE DIA2" : "FOUR_BLOCK_SCORE DIA2"));
+         }
+         }
+         //Check setup for 3 in a row
+         if (checkForThreeSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "THREE_SETUP_SCORE ROW" : "THREE_BLOCK_SCORE ROW"));
+         }
+         }
+         if (checkForThreeSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "THREE_SETUP_SCORE COL" : "THREE_BLOCK_SCORE COL"));
+         }
+         }
+         if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "THREE_SETUP_SCORE DIA1" : "THREE_BLOCK_SCORE DIA1"));
+         }
+         }
+         if (checkForThreeSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_SETUP_SCORE : THREE_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "THREE_SETUP_SCORE DIA2" : "THREE_BLOCK_SCORE DIA2"));
+         }
+         }
+         //Check setup for 2 in a row
+         if (checkForTwoSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "TWO_SETUP_SCORE ROW" : "TWO_BLOCK_SCORE ROW"));
+         }
+         }
+         if (checkForTwoSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "TWO_SETUP_SCORE COL" : "TWO_BLOCK_SCORE COL"));
+         }
+         }
+         if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "TWO_SETUP_SCORE DIA1" : "TWO_BLOCK_SCORE DIA1"));
+         }
+         }
+         if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_SETUP_SCORE : TWO_BLOCK_SCORE);
+         if (x == debugX && y == debugY) {
+         System.out.println((p == playerID ? "TWO_SETUP_SCORE DIA2" : "TWO_BLOCK_SCORE DIA2"));
+         }
+         }
+         } else {
+         if (game.checkForWinner(tempBoard) == p) {
+         tempPointGrid[x][y] += (p == playerID ? WIN_SETUP_SCORE : WIN_BLOCK_SCORE);
+         }
+         //Check setup for 4 in a row
+         if (checkForFourSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
+         }
+         if (checkForFourSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
+         }
+         if (checkForFourSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
+         }
+         if (checkForFourSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? FOUR_BLOCK_SCORE : FOUR_SETUP_SCORE);
+         }
+         //Check setup for 3 in a row
+         if (checkForThreeSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
+         }
+         if (checkForThreeSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
+         }
+         if (checkForThreeSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
+         }
+         if (checkForThreeSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? THREE_BLOCK_SCORE : THREE_SETUP_SCORE);
+         }
+         //Check setup for 2 in a row
+         if (checkForTwoSetupRows(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
+         }
+         if (checkForTwoSetupCols(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
+         }
+         if (checkForTwoSetupDiagonal1(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
+         }
+         if (checkForTwoSetupDiagonal2(tempBoard, x, y) == p) {
+         tempPointGrid[x][y] += (p == playerID ? TWO_BLOCK_SCORE : TWO_SETUP_SCORE);
+         }
+         }
+         tempBoard[x][y] = 0;
 
-                    } else {
-                        tempPointGrid[x][y] = 0;
-                    }
-                }
-            }
-        }
-        return tempPointGrid;
+         } else {
+         tempPointGrid[x][y] = 0;
+         }
+         }
+         }
+         }
+         return tempPointGrid;*/
     }
 
-    // #################
-    // ## Four setups ##
-    // #################
-    public int checkForFourSetupRows(int[][] tiles, int xc, int yc) {
+    // ##################
+    // ## Setup checks ##
+    // ##################
+    public int checkForSetupRows(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = (xc - 3 > 0 ? xc - 3 : 0); x <= (xc < width - 4 ? xc : width - 4); x++) {
                 //Check rows
@@ -408,7 +409,7 @@ public class AIPlayer extends Player implements IAI {
         return 0;
     }
 
-    public int checkForFourSetupCols(int[][] tiles, int xc, int yc) {
+    public int checkForSetupCols(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
                 //Check columns
@@ -420,139 +421,50 @@ public class AIPlayer extends Player implements IAI {
         return 0;
     }
 
-    public int checkForFourSetupDiagonal1(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 3 > 0 ? xc - 3 : 0); x <= (xc < width - 4 ? xc : width - 4); x++) {
-                for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
-                    //Check diagonals \
-                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p && tiles[x + 3][y + 3] == p) {
-                        if (xc == 5 && yc == 5) {
-                            System.out.println("SETUP: (" + x + ", " + y + ") - (" + (x + 3) + ", " + (y + 3) + ")");
-                        }
-                        return p;
-                    }
+    /**
+     * Checks for setups diagonally ( \ ).
+     *
+     * @param tiles Board to check setup on
+     * @param xc X to check
+     * @param yc Y to check
+     * @param length Length of chain to look for
+     * @param ID Player to check for
+     * @return Returns true if setup is found for player [ID]
+     */
+    public boolean checkForSetupDiagonal1(int[][] tiles, int xc, int yc, int length, int ID) {
+        int lowestX, highestX, lowestY, highestY, lowest, highest;
+        //Find loop bounds
+        lowestX = (xc - length > 0 ? xc - length : 0);
+        lowestY = (yc - length > 0 ? yc - length : 0);
+        lowest = (lowestX > lowestY ? lowestX : lowestY); // Lowest bound = highest of the mins
+        highestX = (xc < (tiles.length - (length + 1)) ? xc : (tiles.length - (length + 1)));
+        highestY = (yc < (tiles[0].length - (length + 1)) ? yc : (tiles[0].length - (length + 1)));
+        highest = (highestX < highestY ? highestX : highestY); // Highest bound = lowest of the maxs
+        System.out.println("Lowest: " + lowest);
+        System.out.println("Highest: " + highest);
+
+        //Check diagonals \
+        Outer:
+        for (int xy = lowest; xy <= highest; xy++) {
+            for (int i = 0; i < length; i++) {
+                if (tiles[xy + i][xy + i] != ID) {
+                    System.out.println("tiles[" + (xy + i) + "][" + (xy + i) + "], i: " + i);
+                    continue Outer;
                 }
             }
+            //If this is reached, a setup has been found and true is returned
+            return true;
         }
-        return 0;
+        //If this is reached, no setup has been found and false is returned
+        return false;
     }
 
-    public int checkForFourSetupDiagonal2(int[][] tiles, int xc, int yc) {
+    public int checkForSetupDiagonal2(int[][] tiles, int xc, int yc) {
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = (xc > 3 ? xc : 3); x <= (xc + 3 < width - 1 ? xc + 3 : width - 1); x++) {
                 for (int y = (yc - 3 > 0 ? yc - 3 : 0); y <= (yc < height - 4 ? yc : height - 4); y++) {
                     //Check diagonals /
                     if (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p && tiles[x - 3][y + 3] == p) {
-                        return p;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    // ##################
-    // ## Three setups ##
-    // ##################
-    public int checkForThreeSetupRows(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 2 > 0 ? xc - 2 : 0); x <= (xc < width - 3 ? xc : width - 3); x++) {
-                //Check rows
-                if (tiles[x][yc] == p && tiles[x + 1][yc] == p && tiles[x + 2][yc] == p) {
-                    return p;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForThreeSetupCols(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
-                //Check columns
-                if (tiles[xc][y] == p && tiles[xc][y + 1] == p && tiles[xc][y + 2] == p) {
-                    return p;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForThreeSetupDiagonal1(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 2 > 0 ? xc - 2 : 0); x <= (xc < width - 3 ? xc : width - 3); x++) {
-                for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
-                    //Check diagonals \
-                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p && tiles[x + 2][y + 2] == p) {
-                        return p;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForThreeSetupDiagonal2(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc > 2 ? xc : 2); x <= (xc + 2 < width - 1 ? xc + 2 : width - 1); x++) {
-                for (int y = (yc - 2 > 0 ? yc - 2 : 0); y <= (yc < height - 3 ? yc : height - 3); y++) {
-                    //Check diagonals \
-                    if (tiles[x][y] == p && tiles[x - 1][y + 1] == p && tiles[x - 2][y + 2] == p) {
-                        return p;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    // ################
-    // ## Two setups ##
-    // ################
-    public int checkForTwoSetupRows(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 1 > 0 ? xc - 1 : 0); x <= (xc < width - 2 ? xc : width - 2); x++) {
-                //Check rows
-                if (tiles[x][yc] == p && tiles[x + 1][yc] == p) {
-                    return p;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForTwoSetupCols(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
-                //Check columns
-                if ((tiles[xc][y] == p && tiles[xc][y + 1] == p)) {
-                    return p;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForTwoSetupDiagonal1(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc - 1 > 0 ? xc - 1 : 0); x <= (xc < width - 2 ? xc : width - 2); x++) {
-                for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
-                    //Check diagonals \
-                    if (tiles[x][y] == p && tiles[x + 1][y + 1] == p) {
-                        return p;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    public int checkForTwoSetupDiagonal2(int[][] tiles, int xc, int yc) {
-        for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
-            for (int x = (xc > 1 ? xc : 1); x <= (xc + 1 < width - 1 ? xc + 1 : width - 1); x++) {
-                for (int y = (yc - 1 > 0 ? yc - 1 : 0); y <= (yc < height - 2 ? yc : height - 2); y++) {
-                    //Check diagonals \
-                    if (tiles[x][y] == p && tiles[x - 1][y + 1] == p) {
                         return p;
                     }
                 }
