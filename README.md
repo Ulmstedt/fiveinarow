@@ -1,7 +1,12 @@
-# fiveinarow
-Simple 5 in a row game against AI by Mattias Ulmstedt.
+# Loki AI (Gomoku)
+This is the main development repository for Loki AI (Gomoku version) created by Jimmy Nordström (pzyber)
 
-Includes the following AIs
+--------------------------------------------------------
+
+# Using fiveinarow Gomoku implementation
+Simple Gomoku game against AI by Mattias Ulmstedt.
+
+fiveinarow includes the following AIs
 --------------------------------------------------------
 AIPlayer                  by Mattias Ulmstedt (Ulmstedt)
 
