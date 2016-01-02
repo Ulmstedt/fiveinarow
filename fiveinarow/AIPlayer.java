@@ -21,7 +21,7 @@ public class AIPlayer extends Player implements IAI {
     private final int TWO_SETUP_SCORE = 2;
     private final int TWO_BLOCK_SCORE = 1;
     private final double SIMULATION_INTENSITY = 0.5; //Lower value simulates more cases
-    private final int SIMULATION_DEPTH = 7; //How many rounds in the future that is simulated
+    private final int SIMULATION_DEPTH = 5; //How many rounds in the future that is simulated
 
     public AIPlayer(int id, Game game) {
         super(id, game);
@@ -71,6 +71,23 @@ public class AIPlayer extends Player implements IAI {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+        int[][] knownProblem2 = new int[][]{
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
@@ -81,11 +98,30 @@ public class AIPlayer extends Player implements IAI {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         };
-//        System.out.println("Winner: " + simulateGame(simulationTestBoard, ID, SIMULATION_DEPTH));
+        int[][] knownProblem3 = new int[][]{
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+        System.out.println("Winner: " + simulateGame(knownProblem2, ID, SIMULATION_DEPTH));
 //        System.out.println("---------");
 // -----------------------
-        //pointGrid = calculatePointGrid(simulationTestBoard);
-        pointGrid = calculatePointGrid(game.getBoard(), true);
+        //int[][] gameBoard = Utils.cloneMatrix(game.getBoard());
+        int[][] gameBoard = spinMatrix(knownProblem1);
+
+        pointGrid = calculatePointGrid(gameBoard, false);
         Point p = findBestMove(pointGrid);
         currX = p.x;
         currY = p.y;
@@ -99,12 +135,13 @@ public class AIPlayer extends Player implements IAI {
                 }
             }
         }
-        System.out.println("Points to simulate: " + pointsToSimulate);
         System.out.println("-----");
+        System.out.println("Points to simulate: " + pointsToSimulate);
         while (pointsToSimulate > 0) {
+            System.out.println("-----");
             System.out.println("Best point: (" + p.x + ", " + p.y + ")");
             System.out.println("Score: " + pointGrid[p.x][p.y]);
-            int[][] tempBoard = Utils.cloneMatrix(game.getBoard());
+            int[][] tempBoard = Utils.cloneMatrix(gameBoard);
             tempBoard[p.x][p.y] = this.ID;
 
             //Print board
@@ -141,11 +178,11 @@ public class AIPlayer extends Player implements IAI {
         System.out.println(timeSpent + " ms.");
 
         //For debugging
-        //calculatePointGrid(game.getBoard(), false);
+        //calculatePointGrid(gameBoard, false);
     }
 
     private int simulateGame(int[][] gameBoard, int lastID, int roundsLeft) {
-        //System.out.println("Rounds left: " + roundsLeft);
+        System.out.println("Rounds left: " + roundsLeft);
         int winner = game.checkForWinner(gameBoard);
         if (winner != 0) {
             //System.out.println("Winner found");
@@ -164,7 +201,7 @@ public class AIPlayer extends Player implements IAI {
             int[][] boardCopy = Utils.cloneMatrix(gameBoard);
             int[][] pGrid = calculatePointGrid(boardCopy, true);
             Point p = findBestMove(pGrid);
-            //System.out.println("Simulated p: (" + p.x + ", " + p.y + ")");
+            System.out.println("Simulated p: (" + p.x + ", " + p.y + ") ID: " + currentID);
             //System.out.println("-----------");
             boardCopy[p.x][p.y] = currentID;
             return simulateGame(boardCopy, currentID, roundsLeft - 1);
@@ -461,5 +498,15 @@ public class AIPlayer extends Player implements IAI {
             }
         }
         return 0;
+    }
+
+    private static int[][] spinMatrix(int[][] matrix) {
+        int[][] newMatrix = new int[matrix[0].length][matrix.length];
+        for (int x = 0; x < newMatrix[0].length; x++) {
+            for (int y = 0; y < newMatrix.length; y++) {
+                newMatrix[x][y] = matrix[y][x];
+            }
+        }
+        return newMatrix;
     }
 }
