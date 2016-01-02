@@ -46,7 +46,7 @@ public class Game {
                     p.roundEnded(winner);
                 }
 
-                resetGame();
+                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = checkForWinner(board);
             if (currentPlayer instanceof IAI && winner == 0) {
@@ -72,7 +72,8 @@ public class Game {
     }
 
     private void initGame() {
-        this.board = new int[width][height];
+        //this.board = new int[width][height];
+        this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
 
         playerList.add(new Player(1, this));
         //playerList.add(new Player(2, this));
