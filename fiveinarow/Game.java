@@ -72,8 +72,8 @@ public class Game {
     }
 
     private void initGame() {
-        //this.board = new int[width][height];
-        this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
+        this.board = new int[width][height];
+        //this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
 
         playerList.add(new Player(1, this));
         //playerList.add(new Player(2, this));
