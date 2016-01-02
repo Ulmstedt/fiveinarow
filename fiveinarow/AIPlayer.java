@@ -17,7 +17,7 @@ public class AIPlayer extends Player implements IAI {
     private final int FOUR_SETUP_SCORE = 100;
     private final int FOUR_BLOCK_SCORE = 80;
     private final int THREE_SETUP_SCORE = 30;
-    private final int THREE_BLOCK_SCORE = 25;
+    private final int THREE_BLOCK_SCORE = 20;
     private final int TWO_SETUP_SCORE = 2;
     private final int TWO_BLOCK_SCORE = 1;
     private final double SIMULATION_INTENSITY = 0.5; //Lower value simulates more cases
@@ -64,17 +64,17 @@ public class AIPlayer extends Player implements IAI {
 
         // -----------------------
 //        System.out.println("---------");
-        int[][] simulationTestBoard = new int[][]{
+        int[][] knownProblem1 = new int[][]{
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -85,7 +85,7 @@ public class AIPlayer extends Player implements IAI {
 //        System.out.println("---------");
 // -----------------------
         //pointGrid = calculatePointGrid(simulationTestBoard);
-        pointGrid = calculatePointGrid(game.getBoard(), false);
+        pointGrid = calculatePointGrid(game.getBoard(), true);
         Point p = findBestMove(pointGrid);
         currX = p.x;
         currY = p.y;
