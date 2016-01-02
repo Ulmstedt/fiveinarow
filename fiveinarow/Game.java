@@ -13,6 +13,7 @@ public class Game {
     private final ArrayList<GameListener> gameListeners;
     private final ArrayList<Player> playerList;
     private Player currentPlayer;
+    private WinnerHistory winnerHistory;
 
     private int width, height;
     private int winner, roundCount;
@@ -24,7 +25,7 @@ public class Game {
 
     private int[][] board;
 
-    public final boolean DEBUG = true;
+    public final int DEBUG_LEVEL = 2; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -32,6 +33,7 @@ public class Game {
         this.width = width;
         this.height = height;
         this.winner = 0;
+        this.winnerHistory = new WinnerHistory(50);
         initGame();
     }
 
@@ -40,11 +42,11 @@ public class Game {
         if (winner == 0) {
             if (isBoardFull()) {
                 // Notify all players that the round has ended before resetting the game.
-                for(IPlayer p : playerList) {
+                for (IPlayer p : playerList) {
                     p.roundEnded(winner);
                 }
 
-                resetGame();
+                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = checkForWinner(board);
             if (currentPlayer instanceof IAI && winner == 0) {
@@ -54,14 +56,15 @@ public class Game {
         } else {
             if (!pointsGiven) {
                 playerList.get(winner - 1).givePoint();
+                winnerHistory.saveWinner(winner);
                 pointsGiven = true;
 
                 // Notify all players that the round has ended before resetting the game.
-                for(IPlayer p : playerList) {
+                for (IPlayer p : playerList) {
                     p.roundEnded(winner);
                 }
 
-                //resetGame();
+                resetGame();
             }
             winner = 0;
 
@@ -69,13 +72,16 @@ public class Game {
     }
 
     private void initGame() {
-        this.board = new int[width][height];
+        //this.board = new int[width][height];
+        this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
 
         playerList.add(new Player(1, this));
+        //playerList.add(new Player(2, this));
         //playerList.add(new AIPlayer(1, this));
         //playerList.add(new AILoki(1, this));
         playerList.add(new AIPlayer(2, this));
         //playerList.add(new AILoki(2, this));
+        //playerList.add(new AIJohan(2, this));
         //playerList.add(new AIPlayer(3, this));
 
         playerStarted = 0;
@@ -219,6 +225,10 @@ public class Game {
         return colors;
     }
 
+    public WinnerHistory getWinnerHistory() {
+        return winnerHistory;
+    }
+
     // #############
     // ## Setters ##
     // #############
@@ -226,7 +236,7 @@ public class Game {
         board[x][y] = value;
 
         // Notify all players that a move has been made.
-        for(IPlayer p : playerList) {
+        for (IPlayer p : playerList) {
             p.moveMade(new Point(x, y));
         }
     }
