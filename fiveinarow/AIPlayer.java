@@ -226,14 +226,6 @@ public class AIPlayer extends Player implements IAI {
             int[][] tempBoard = Utils.cloneMatrix(gameBoard);
             tempBoard[p.x][p.y] = this.ID;
 
-            //Print board
-//            for (int x = 0; x < width; x++) {
-//                for (int y = 0; y < height; y++) {
-//                    System.out.print(tempBoard[y][x]);
-//                }
-//                System.out.println();
-//            }
-            //
             System.out.println("------ SIMULATION " + sim + ": (" + p.x + ", " + p.y + ") -----------------");
             int simulatedWinner = simulateGame(tempBoard, this.ID, SIMULATION_DEPTH);
             System.out.println("------ END OF SIMULATION --------------------");
@@ -261,7 +253,6 @@ public class AIPlayer extends Player implements IAI {
         System.out.println(timeSpent + " ms.");
 
         //For debugging
-//        System.out.println("------- DEBUG --------");
         pointGrid = calculatePointGrid(game.getBoard(), 1);
         System.out.println("###### END OF ROUND #########################");
     }
@@ -280,13 +271,10 @@ public class AIPlayer extends Player implements IAI {
             } else {
                 currentID = pl.get(0).getID();
             }
-            //System.out.println("Current player: " + currentID);
-            //
             int[][] boardCopy = Utils.cloneMatrix(gameBoard);
             int[][] pGrid = calculatePointGrid(boardCopy, currentID);
             Point p = findBestMove(pGrid);
             System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
-            //System.out.println("-----------");
             boardCopy[p.x][p.y] = currentID;
             return simulateGame(boardCopy, currentID, roundsLeft - 1);
         } else {
@@ -307,7 +295,7 @@ public class AIPlayer extends Player implements IAI {
         return new Point(bestX, bestY);
     }
 
-    public int[][] calculatePointGrid(int[][] board, int playerID) {
+    private int[][] calculatePointGrid(int[][] board, int playerID) {
         int[][] tempPointGrid = newPointGrid();
         int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
