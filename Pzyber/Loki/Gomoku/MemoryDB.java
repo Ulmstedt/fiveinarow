@@ -3,7 +3,7 @@
  *
  * MemoryDB.java
  * Created on 2015-12-30
- * Version 0.3.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -75,7 +75,8 @@ public class MemoryDB implements ILokiDB {
     }
 
     @Override
-    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size) {
+    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror,
+                                                       int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
 
         if (db.containsKey(hash)) {
@@ -87,8 +88,8 @@ public class MemoryDB implements ILokiDB {
                 Point move = entry.getKey();
                 long[] dbData = entry.getValue();
 
-                // Scale and rotate move.
-                move = Utils.scaleAndRotate(move, startX, startY, rotations, size);
+                // Scale, de-mirror and de-rotate move.
+                move = Utils.scaleMirrorAndRotate(move, startX, startY, mirror, rotations, size);
 
                 // Add to available moves.
                 availableMoves.add(new MoveData(move, dbData[DRAWS], dbData[LOSSES], dbData[WINS]));
