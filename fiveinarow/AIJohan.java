@@ -13,18 +13,18 @@ import java.util.*;
  */
 public class AIJohan extends Player implements IAI
 {
+	boolean aggresive;
 	Random rand = new Random();
 
-	public AIJohan(int id, Game game) {
+	public AIJohan(int id, Game game, boolean aggresive) {
 		super(id, game);
-		int width = game.getWidth();
-		int height = game.getHeight();
-		pointGrid = new int[width][height];
+
+		this.aggresive = aggresive;
 	}
 
 	@Override
 	public void playRound() {
-		Point p = aiGetNext(game.getBoard(), ID, ID == 1 ? 2 : 1, 0);
+		Point p = aiGetNext(game.getBoard(), ID, ID == 1 ? 2 : 1, 0, aggresive);
 
 		while (p == null || 0 != game.getBoard()[p.y][p.x])
 		{
@@ -55,7 +55,7 @@ public class AIJohan extends Player implements IAI
 
 			System.out.println("-------------------");
 			System.out.println("Pl: " + i);
-			p = aiGetNext(board, markPlayer, markAi, markEmpty);
+			p = aiGetNext(board, markPlayer, markAi, markEmpty, false);
 			
 			while (p == null || markEmpty != board[p.y][p.x])
 			{
@@ -76,7 +76,7 @@ public class AIJohan extends Player implements IAI
 
 			System.out.println("-------------------");
 			System.out.println("AI: " + (i + 1));
-			p = aiGetNext(board, markAi, markPlayer, markEmpty);
+			p = aiGetNext(board, markAi, markPlayer, markEmpty, false);
 			board[p.y][p.x] = markAi;
 			printBoard(board, marks);
 			if (!search(board, 5, markAi, 0).isEmpty())
@@ -344,20 +344,33 @@ public class AIJohan extends Player implements IAI
 			final int[][] board, 
 			final int _AI_MY,
 			final int _AI_PLAYER, 
-			final int _AI_EMPTY)
+			final int _AI_EMPTY,
+			final boolean offensive)
 	{
 		Map<Integer, SearchConfig> prioMap = new HashMap<Integer, SearchConfig>();
 
-		// Search all line lengths, starting with the longest and mine in order to try to win.
-		prioMap.put(0, new SearchConfig(4, true));
-		prioMap.put(1, new SearchConfig(4, false));
-		prioMap.put(2, new SearchConfig(3, false));
-		prioMap.put(3, new SearchConfig(2, false));
-		prioMap.put(4, new SearchConfig(3, true));
-		prioMap.put(5, new SearchConfig(1, false));
-		prioMap.put(6, new SearchConfig(2, true));
-		prioMap.put(7, new SearchConfig(1, true));
-		prioMap.put(8, new SearchConfig(0, true));
+		// Search all line lengths, if defensive starting with the longest and mine in order to try to win.
+		if(!offensive){
+			prioMap.put(0, new SearchConfig(4, true));
+			prioMap.put(1, new SearchConfig(4, false));
+			prioMap.put(2, new SearchConfig(3, false));
+			prioMap.put(3, new SearchConfig(2, false));
+			prioMap.put(4, new SearchConfig(3, true));
+			prioMap.put(5, new SearchConfig(1, false));
+			prioMap.put(6, new SearchConfig(2, true));
+			prioMap.put(7, new SearchConfig(1, true));
+			prioMap.put(8, new SearchConfig(0, true));
+		}else{
+			prioMap.put(0, new SearchConfig(4, true));
+			prioMap.put(1, new SearchConfig(4, false));
+			prioMap.put(2, new SearchConfig(3, true));
+			prioMap.put(3, new SearchConfig(3, false));
+			prioMap.put(4, new SearchConfig(2, true));
+			prioMap.put(5, new SearchConfig(2, false));
+			prioMap.put(6, new SearchConfig(1, true));
+			prioMap.put(7, new SearchConfig(1, false));
+			prioMap.put(8, new SearchConfig(0, true));
+		}
 		
 		for (int i = 0; i < prioMap.size(); ++i)
 		{
