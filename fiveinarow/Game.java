@@ -15,7 +15,7 @@ public class Game {
     private Player currentPlayer;
     private WinnerHistory winnerHistory;
 
-    private int width, height;
+    private final int width, height;
     private int winner, roundCount;
     private boolean pointsGiven;
     private int playerStarted = 0;
@@ -73,6 +73,7 @@ public class Game {
 
     private void initGame() {
         this.board = new int[width][height];
+        //this.board = AIPlayer.invertMatrix(AIPlayer.setupDiaAt55);
         //this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
 
         playerList.add(new Player(1, this));
