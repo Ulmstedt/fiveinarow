@@ -155,29 +155,29 @@ public class AIPlayer extends Player implements IAI {
     private int width, height;
 
     //Defensive
-    private final int WIN_SETUP_SCORE = 5000;
-    private final int WIN_BLOCK_SCORE = 1200;
-    private final int FOUR_SETUP_SCORE = 300;
-    private final int FOUR_BLOCK_SCORE = 250;
-    private final int THREE_SETUP_SCORE = 40;
-    private final int THREE_BLOCK_SCORE = 25;
-    private final int TWO_SETUP_SCORE = 2;
-    private final int TWO_BLOCK_SCORE = 1;
+    private final int WIN_SETUP_SCORE = 50000;
+    private final int WIN_BLOCK_SCORE = 12000;
+    private final int FOUR_SETUP_SCORE = 3000;
+    private final int FOUR_BLOCK_SCORE = 2500;
+    private final int THREE_SETUP_SCORE = 400;
+    private final int THREE_BLOCK_SCORE = 250;
+    private final int TWO_SETUP_SCORE = 20;
+    private final int TWO_BLOCK_SCORE = 10;
     //Aggressive (bad numbers)
     /*private final int WIN_SETUP_SCORE = 5000;
-    private final int WIN_BLOCK_SCORE = 1200;
-    private final int FOUR_SETUP_SCORE = 400;
-    private final int FOUR_BLOCK_SCORE = 250;
-    private final int THREE_SETUP_SCORE = 45;
-    private final int THREE_BLOCK_SCORE = 25;
-    private final int TWO_SETUP_SCORE = 2;
-    private final int TWO_BLOCK_SCORE = 1;*/
+     private final int WIN_BLOCK_SCORE = 1200;
+     private final int FOUR_SETUP_SCORE = 400;
+     private final int FOUR_BLOCK_SCORE = 250;
+     private final int THREE_SETUP_SCORE = 45;
+     private final int THREE_BLOCK_SCORE = 25;
+     private final int TWO_SETUP_SCORE = 2;
+     private final int TWO_BLOCK_SCORE = 1;*/
 
     private final int[] SETUP_SCORE = new int[]{0, 0, TWO_SETUP_SCORE, THREE_SETUP_SCORE, FOUR_SETUP_SCORE};
     private final int[] BLOCK_SCORE = new int[]{0, 0, TWO_BLOCK_SCORE, THREE_BLOCK_SCORE, FOUR_BLOCK_SCORE};
 
     private final double SIMULATION_INTENSITY = 0.5; //Lower value simulates more cases
-    private final int SIMULATION_DEPTH = 5; //How many rounds in the future that is simulated
+    private final int SIMULATION_DEPTH = 9; //How many rounds in the future that is simulated
 
     public AIPlayer(int id, Game game) {
         super(id, game);
@@ -185,7 +185,7 @@ public class AIPlayer extends Player implements IAI {
         height = game.getHeight();
     }
 
-    private int[][] newPointGrid() {
+    private int[][] newPointGrid(int width, int height) {
         int[][] newPointGrid = new int[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -306,7 +306,7 @@ public class AIPlayer extends Player implements IAI {
     }
 
     private int[][] calculatePointGrid(int[][] board, int playerID) {
-        int[][] tempPointGrid = newPointGrid();
+        int[][] tempPointGrid = newPointGrid(width, height);
         int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < game.getWidth(); x++) {

@@ -24,9 +24,11 @@ public class Game {
     private Color[][] colors;
 
     private int[][] board;
+    private ArrayList<Point> moveHistoryList;
     private Point mostRecentMove;
 
-    public final int DEBUG_LEVEL = 0; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final int DEBUG_LEVEL = 2; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final boolean SHOW_PLAY_ORDER = true; // 1 to show which order the plays were in
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -90,6 +92,7 @@ public class Game {
         this.playerStarted = 0;
         this.currentPlayer = playerList.get(playerStarted);
         this.colors = generateRandomColors(); //Random colors
+        this.moveHistoryList = new ArrayList<>();
         this.mostRecentMove = new Point(-1, -1);
     }
 
@@ -103,6 +106,8 @@ public class Game {
         pointsGiven = false;
         roundCount = 0;
         colors = generateRandomColors(); //Random colors
+        moveHistoryList = new ArrayList<>();
+        mostRecentMove = new Point(-1, -1);
 
         // Switch players.
         playerStarted++;
@@ -232,17 +237,23 @@ public class Game {
     public WinnerHistory getWinnerHistory() {
         return winnerHistory;
     }
-    
-    public Point getMostRecentMove(){
+
+    public Point getMostRecentMove() {
         return mostRecentMove;
+    }
+
+    public ArrayList<Point> getMoveHistory() {
+        return moveHistoryList;
     }
 
     // #############
     // ## Setters ##
     // #############
+    //Should remake this system and make it safer
     public void setTile(int x, int y, int value) {
         board[x][y] = value;
         mostRecentMove = new Point(x, y);
+        moveHistoryList.add((Point) mostRecentMove.clone());
         // Notify all players that a move has been made.
         for (IPlayer p : playerList) {
             p.moveMade(new Point(x, y));

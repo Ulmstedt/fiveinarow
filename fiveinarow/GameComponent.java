@@ -10,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -172,13 +173,6 @@ public class GameComponent extends JComponent implements GameListener, MouseList
 
         g2d.drawString("Total:  " + player1StringTotal + " / " + player2StringTotal + "  |  Last " + winnerHistory.getHistoryLength() + " games:  " + player1StringRecent + " / " + player2StringRecent, 3, height - 5);
 
-        //Player 1
-//        g2d.setColor(ColorList.colors.get(0));
-//        g2d.drawString("Player 1: " + player1ScoreTotal + " (" + player1PercentTotalString + "%)", 50, height - 5);
-        //g2d.drawString("Player 1: " + "50" + "%", 50, height - 5);
-        //Player 2
-//        g2d.setColor(ColorList.colors.get(1));
-//        g2d.drawString("Player 2: " + player2ScoreTotal + " (" + player2PercentTotalString + "%)", 200, height - 5);
         int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
         int highestScore = game.getPlayerList().get(1).findHighestScore();
 
@@ -190,9 +184,10 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                     g2d.fillRect(x * Constants.SQUARE_SIZE, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE);
                 }
             }
-        }else{
-            g2d.setColor(Color.BLUE);
-            g2d.fillRect(0,Constants.PADDING_TOP, game.getWidth(), game.getHeight() - Constants.PADDING_TOP); // FUNKAR EJ
+        } else {
+            //g2d.setColor(new Color(0,92,220));
+            g2d.setColor(new Color(0, 50, 120));
+            g2d.fillRect(0, Constants.PADDING_TOP, game.getWidth() * Constants.SQUARE_SIZE, game.getHeight() * Constants.SQUARE_SIZE); // FUNKAR EJ
         }
         //Draw square lines
         g2d.setColor(Color.BLACK);
@@ -233,6 +228,17 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                         g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 28, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 16);
                     }
                 }
+            }
+        }
+
+        //Draw play order numbers
+        if (game.SHOW_PLAY_ORDER) {
+            ArrayList<Point> moveHistoryList = game.getMoveHistory();
+            for (int i = 0; i < moveHistoryList.size(); i++) {
+                //System.out.println("Move (" + moveHistoryList.get(i).x + ", " + moveHistoryList.get(i).y + ")");
+                g2d.setColor(Color.ORANGE);
+                g2d.setFont(new Font("Monospaced", Font.BOLD, 12));
+                g2d.drawString("" + (i + 1), (moveHistoryList.get(i).x + 1) * Constants.SQUARE_SIZE - 12, moveHistoryList.get(i).y * Constants.SQUARE_SIZE + Constants.PADDING_TOP + 13);
             }
         }
 
