@@ -24,8 +24,9 @@ public class Game {
     private Color[][] colors;
 
     private int[][] board;
+    private Point mostRecentMove;
 
-    public final int DEBUG_LEVEL = 2; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final int DEBUG_LEVEL = 0; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -46,7 +47,7 @@ public class Game {
                     p.roundEnded(winner);
                 }
 
-                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                resetGame();
             }
             winner = checkForWinner(board);
             if (currentPlayer instanceof IAI && winner == 0) {
@@ -64,7 +65,7 @@ public class Game {
                     p.roundEnded(winner);
                 }
 
-                resetGame();
+                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -82,12 +83,14 @@ public class Game {
         //playerList.add(new AILoki(1, this));
         playerList.add(new AIPlayer(2, this));
         //playerList.add(new AILoki(2, this));
-        //playerList.add(new AIJohan(2, this));
+        //playerList.add(new AIJohan(2, this, false));
         //playerList.add(new AIPlayer(3, this));
+        //playerList.add(new AIJimmyOld(2, this));
 
-        playerStarted = 0;
-        currentPlayer = playerList.get(playerStarted);
-        colors = generateRandomColors(); //Random colors
+        this.playerStarted = 0;
+        this.currentPlayer = playerList.get(playerStarted);
+        this.colors = generateRandomColors(); //Random colors
+        this.mostRecentMove = new Point(-1, -1);
     }
 
     public void resetGame() {
@@ -229,13 +232,17 @@ public class Game {
     public WinnerHistory getWinnerHistory() {
         return winnerHistory;
     }
+    
+    public Point getMostRecentMove(){
+        return mostRecentMove;
+    }
 
     // #############
     // ## Setters ##
     // #############
     public void setTile(int x, int y, int value) {
         board[x][y] = value;
-
+        mostRecentMove = new Point(x, y);
         // Notify all players that a move has been made.
         for (IPlayer p : playerList) {
             p.moveMade(new Point(x, y));

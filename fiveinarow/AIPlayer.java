@@ -154,6 +154,7 @@ public class AIPlayer extends Player implements IAI {
 
     private int width, height;
 
+    //Defensive
     private final int WIN_SETUP_SCORE = 5000;
     private final int WIN_BLOCK_SCORE = 1200;
     private final int FOUR_SETUP_SCORE = 300;
@@ -162,6 +163,15 @@ public class AIPlayer extends Player implements IAI {
     private final int THREE_BLOCK_SCORE = 25;
     private final int TWO_SETUP_SCORE = 2;
     private final int TWO_BLOCK_SCORE = 1;
+    //Aggressive (bad numbers)
+    /*private final int WIN_SETUP_SCORE = 5000;
+    private final int WIN_BLOCK_SCORE = 1200;
+    private final int FOUR_SETUP_SCORE = 400;
+    private final int FOUR_BLOCK_SCORE = 250;
+    private final int THREE_SETUP_SCORE = 45;
+    private final int THREE_BLOCK_SCORE = 25;
+    private final int TWO_SETUP_SCORE = 2;
+    private final int TWO_BLOCK_SCORE = 1;*/
 
     private final int[] SETUP_SCORE = new int[]{0, 0, TWO_SETUP_SCORE, THREE_SETUP_SCORE, FOUR_SETUP_SCORE};
     private final int[] BLOCK_SCORE = new int[]{0, 0, TWO_BLOCK_SCORE, THREE_BLOCK_SCORE, FOUR_BLOCK_SCORE};

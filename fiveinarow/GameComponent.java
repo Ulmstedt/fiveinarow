@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -189,6 +190,9 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                     g2d.fillRect(x * Constants.SQUARE_SIZE, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE);
                 }
             }
+        }else{
+            g2d.setColor(Color.BLUE);
+            g2d.fillRect(0,Constants.PADDING_TOP, game.getWidth(), game.getHeight() - Constants.PADDING_TOP); // FUNKAR EJ
         }
         //Draw square lines
         g2d.setColor(Color.BLACK);
@@ -200,15 +204,27 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         }
 
         Color[][] colors = game.getColors();
+        Point mostRecentMove = game.getMostRecentMove();
 
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
                     if (game.getTile(x, y) == p) {
-                        g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1)); //Standard colors
+                        if (mostRecentMove.x == x && mostRecentMove.y == y) {
+                            g2d.setColor(Color.ORANGE);
+                            g2d.drawRect(x * Constants.SQUARE_SIZE + 3, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP + 3, Constants.SQUARE_SIZE - 4, Constants.SQUARE_SIZE - 4);
+                        }
                         //g2d.setColor(colors[x][y]); //Random colors
-                        g2d.setFont(new Font("Serif", Font.BOLD, 50));
-                        g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
+                        //Draw border around most recent move
+                        g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1)); //Standard colors
+                        //Draw markers
+                        if (p <= 2) {
+                            g2d.setFont(new Font("Monospaced", Font.BOLD, 70));
+                            g2d.drawString((p == 1 ? "X" : "O"), Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 19, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 22 + Constants.PADDING_TOP);
+                        } else {
+                            g2d.setFont(new Font("Serif", Font.BOLD, 50));
+                            g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
+                        }
                     }
                     if (game.DEBUG_LEVEL >= 2) {
                         //Draw AI's  score grid (for debugging)
@@ -222,8 +238,8 @@ public class GameComponent extends JComponent implements GameListener, MouseList
 
         int winner = game.getWinner();
         if (winner != 0) {
-            g2d.setColor(new Color(0f, 0f, 0f, 0.7f));
-            g2d.fillRect(0, 0, width, height);
+            g2d.setColor(new Color(0f, 0f, 0f, 0.4f));
+            g2d.fillRect(0, 0, width, height + Constants.PADDING_TOP + Constants.PADDING_BOTTOM);
             g2d.setColor(ColorList.colors.get(winner - 1));
             g2d.setFont(new Font("Serif", Font.BOLD, 50));
             g2d.drawString("Player " + winner + " wins!", width / 2 - 130, height / 2 - 10);
