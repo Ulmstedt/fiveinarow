@@ -3,7 +3,7 @@
  *
  * Loki.java
  * Created on 2015-12-28
- * Version 0.3.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -65,7 +65,7 @@ public class Loki {
 
         // Search for patterns in DB.
         for (int idFlip = 0; idFlip < 2; idFlip++) { // Flip id loop.
-            //for (int searchPatternMirror = 0; searchPatternMirror < 2; searchPatternMirror++) { // Mirror search pattern loop.
+            for (int searchPatternMirror = 0; searchPatternMirror < 2; searchPatternMirror++) { // Mirror search pattern loop.
                 for (int searchPatternRotation = 0; searchPatternRotation < 4; searchPatternRotation++) { // Rotate search pattern loop.
                     int startX = 0;
                     int endX = searchWidth - 1;
@@ -75,9 +75,9 @@ public class Loki {
                         while (endX < width) {
                             // Get, mirror and rotate search pattern before hashing.
                             int[][] searchPattern = Utils.getSearchPattern(board, startX, startY, endX, endY);
-                            /*for (int i = 2 - searchPatternMirror; i < 2; i++) {
+                            for (int i = 2 - searchPatternMirror; i < 2; i++) {
                                 searchPattern = Utils.mirrorSearchPatternVertically(searchPattern);
-                            }*/
+                            }
                             for (int i = 4 - searchPatternRotation; i < 4; i++) {
                                 searchPattern = Utils.rotateSearchPatternClockwise(searchPattern);
                             }
@@ -87,13 +87,12 @@ public class Loki {
 
                             // Get available moves for current hash from loki db and add do data.
                             ArrayList<MoveData> availableMoves = lokiDB.getAvailableMovesFromDB(hash, startX, startY,
-                                    searchPatternRotation, searchWidth);
+                                    (searchPatternMirror == 1 ? true : false), searchPatternRotation, searchWidth);
                             for (MoveData m : availableMoves) {
                                 Point move = m.getMove();
 
                                 // If move available, add MoveData to data list.
-                                if(board[move.y][move.x] == 0) {
-                                    //System.out.println(m.thoughtResult() + " " + m.getMove().x + "," + m.getMove().y + " | searchPatternMirror=" + searchPatternMirror + " searchPatternRotation=" + searchPatternRotation + " idFlip=" + idFlip+ " | startX=" + startX + " startY=" + startY + " endX=" + endX + " endY=" + endY + " | " + hash);
+                                if (board[move.y][move.x] == 0) {
                                     data.add(m);
                                 }
                             }
@@ -108,7 +107,7 @@ public class Loki {
                         endY++;
                     }
                 }
-            //}
+            }
         }
 
         return data;
@@ -264,10 +263,6 @@ public class Loki {
                     thoughtResult = data.get(coord).thoughtResult();
                 }
                 thoughtData[y][x] = thoughtResult;
-                /*if(thoughtResult > 0)
-                {
-                    System.out.println("Loki thought result " + x + " : " + y + " = " + thoughtResult);
-                }*/
 
                 // Check if better move.
                 if (board[y][x] == 0) {

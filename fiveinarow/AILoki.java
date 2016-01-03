@@ -3,7 +3,7 @@
  *
  * AILoki.java
  * Created on 2015-12-28
- * Version 0.3.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -35,7 +35,6 @@ public class AILoki extends Player implements IAI {
     // Folder DB
     public AILoki(int id, Game game, boolean aggressive, String path) {
         super(id, game);
-        int size = game.getWidth();
 
         loki = new Loki(path, game.getWidth(), game.getHeight(), aggressive);
     }

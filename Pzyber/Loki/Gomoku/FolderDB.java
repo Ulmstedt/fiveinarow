@@ -66,7 +66,8 @@ public class FolderDB implements ILokiDB {
     }
 
     @Override
-    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size) {
+    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror,
+                                                       int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
 
         String baseHashPath = path + "/" + hash;
@@ -81,8 +82,8 @@ public class FolderDB implements ILokiDB {
                     String[] pos = posDot[0].split("_");
                     Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
-                    // Scale and rotate move.
-                    move = Utils.scaleAndRotate(move, startX, startY, rotations, size);
+                    // Scale, de-mirror and de-rotate move.
+                    move = Utils.scaleMirrorAndRotate(move, startX, startY, mirror, rotations, size);
 
                     // Get draws, losses and wins.
                     long[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
