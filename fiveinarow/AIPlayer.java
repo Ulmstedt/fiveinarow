@@ -79,22 +79,42 @@ public class AIPlayer extends Player implements IAI {
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
     static final int[][] setupDiaAt55 = new int[][]{
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        //0 1  2  3  4  5  6  7  8  9  0  1  2  3  4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 5
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 6
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 7
+        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 8
+        {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 9
+        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
     };
+    static final int[][] setupDia2 = new int[][]{
+        //0 1  2  3  4  5  6  7  8  9  0  1  2  3  4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 5
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 6
+        {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},// 7
+        {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},// 8
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 9
+        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
+    };
+    int checkX = 4, checkY = 11, checkLength = 4;
 
     private int width, height;
 
@@ -128,8 +148,10 @@ public class AIPlayer extends Player implements IAI {
     @Override
     public void playRound() {
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-        System.out.println("Setup " + (checkForSetupDiagonal1(AIPlayer.invertMatrix(AIPlayer.setupDiaAt55), 5, 5, 4, 1) ? "found" : "not found"));
+        //System.out.println("Setup " + (checkForSetupDiagonal1(AIPlayer.invertMatrix(AIPlayer.setupDiaAt55), checkX, checkY, checkLength, 1) ? "found" : "not found"));
+        System.out.println("Setup " + (checkForSetupDiagonal2(AIPlayer.invertMatrix(AIPlayer.setupDia2), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println();
 
         System.out.println("###### START OF ROUND #######################");
         //Start time of AI's turn
@@ -245,7 +267,7 @@ public class AIPlayer extends Player implements IAI {
 
     public int[][] calculatePointGrid(int[][] board, int playerID, boolean defensive) {
         //resetPointGrid();
-        return new int[][]{{0}};
+        return new int[15][15];
         /*
          int[][] tempPointGrid = newPointGrid();
          int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
@@ -433,22 +455,84 @@ public class AIPlayer extends Player implements IAI {
      */
     public boolean checkForSetupDiagonal1(int[][] tiles, int xc, int yc, int length, int ID) {
         int lowestX, highestX, lowestY, highestY, lowest, highest;
-        //Find loop bounds
-        lowestX = (xc - length > 0 ? xc - length : 0);
-        lowestY = (yc - length > 0 ? yc - length : 0);
-        lowest = (lowestX > lowestY ? lowestX : lowestY); // Lowest bound = highest of the mins
-        highestX = (xc < (tiles.length - (length + 1)) ? xc : (tiles.length - (length + 1)));
-        highestY = (yc < (tiles[0].length - (length + 1)) ? yc : (tiles[0].length - (length + 1)));
-        highest = (highestX < highestY ? highestX : highestY); // Highest bound = lowest of the maxs
-        System.out.println("Lowest: " + lowest);
-        System.out.println("Highest: " + highest);
+        //Find lower loop bound
+        lowestX = (xc - (length - 1) > 0 ? xc - (length - 1) : 0);
+        lowestY = (yc - (length - 1) > 0 ? yc - (length - 1) : 0);
+        int lowestXOffset = lowestX - xc; //xc - lowestX
+        int lowestYOffset = lowestY - yc; // yc - lowestY
+        lowest = (lowestXOffset > lowestYOffset ? lowestXOffset : lowestYOffset); // Lowest bound = highest of the mins // >
+        //Find upper loop bound
+        highestX = (xc < (tiles.length - length) ? xc : (tiles.length - length));
+        highestY = (yc < (tiles[0].length - length) ? yc : (tiles[0].length - length));
+        int highestXDistance = highestX - xc;
+        int highestYDistance = highestY - yc;
+        highest = (highestXDistance < highestYDistance ? highestXDistance : highestYDistance); // Highest bound = lowest of the maxs
 
-        //Check diagonals \
+        //If lowest > highest, a setup is not possible in this position
+        if (lowest > highest) {
+            System.out.println("Setup not possible");
+            return false;
+        }
+
+        System.out.println("Lowest: " + lowest + " (optimal = length)");
+        System.out.println("Highest: " + highest + " (optimal = 0");
+        System.out.println("Loop from " + lowest + " to " + highest);
+
         Outer:
         for (int xy = lowest; xy <= highest; xy++) {
             for (int i = 0; i < length; i++) {
-                if (tiles[xy + i][xy + i] != ID) {
-                    System.out.println("tiles[" + (xy + i) + "][" + (xy + i) + "], i: " + i);
+                if (tiles[xc + xy + i][yc + xy + i] != ID) {
+                    System.out.println("tiles[" + (xc + xy + i) + "][" + (yc + xy + i) + "] = " + tiles[xc + xy + i][yc + xy + i] + ", i: " + i);
+                    continue Outer;
+                }
+            }
+            //If this is reached, a setup has been found and true is returned
+            return true;
+        }
+        //If this is reached, no setup has been found and false is returned
+        return false;
+    }
+
+    /**
+     * Checks for setups diagonally ( / ).
+     *
+     * @param tiles Board to check setup on
+     * @param xc X to check
+     * @param yc Y to check
+     * @param length Length of chain to look for
+     * @param ID Player to check for
+     * @return Returns true if setup is found for player [ID]
+     */
+    public boolean checkForSetupDiagonal2(int[][] tiles, int xc, int yc, int length, int ID) {
+        int lowestX, highestX, lowestY, highestY, lowest, highest;
+        //Find lower loop bound
+        lowestX = (xc + (length - 1) < (tiles.length - 1) ? xc + (length - 1) : (tiles.length - 1));
+        lowestY = (yc - (length - 1) > 0 ? yc - (length - 1) : 0);
+        int lowestXOffset = xc - lowestX;
+        int lowestYOffset = lowestY - yc;
+        lowest = (lowestXOffset > lowestYOffset ? lowestXOffset : lowestYOffset); // Lowest bound = highest of the mins
+        //Find upper loop bound
+        highestX = (xc > (length - 1) ? xc : (length - 1));
+        highestY = (yc < (tiles[0].length - length) ? yc : (tiles[0].length - length));
+        int highestXDistance = xc - highestX;
+        int highestYDistance = highestY - yc;
+        highest = (highestXDistance < highestYDistance ? highestXDistance : highestYDistance); // Highest bound = lowest of the maxs
+
+        //If lowest > highest, a setup is not possible in this position
+        if (lowest > highest) {
+            System.out.println("Setup not possible");
+            return false;
+        }
+
+        System.out.println("Lowest: " + lowest + " (optimal = length)");
+        System.out.println("Highest: " + highest + " (optimal = 0");
+        System.out.println("Loop from " + lowest + " to " + highest);
+
+        Outer:
+        for (int xy = lowest; xy <= highest; xy++) {
+            for (int i = 0; i < length; i++) {
+                if (tiles[xc - xy - i][yc + xy + i] != ID) {
+                    System.out.println("tiles[" + (xc + xy + i) + "][" + (yc + xy + i) + "] = " + tiles[xc + xy + i][yc + xy + i] + ", i: " + i);
                     continue Outer;
                 }
             }
