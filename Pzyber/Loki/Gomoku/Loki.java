@@ -3,7 +3,7 @@
  *
  * Loki.java
  * Created on 2015-12-28
- * Version 0.4.0 Beta
+ * Version 0.5.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -46,16 +46,26 @@ public class Loki {
         lokiDB = new MemoryDB();
     }
 
-    // TODO: Change to File DB (Zip).
     // Folder DB.
-    public Loki(String path, int width, int height, boolean aggressive) {
+    public Loki(String folderPath, int width, int height, boolean aggressive) {
         size = width <= height ? width : height;
         this.width = width;
         this.height = height;
         MoveData.aggressive = aggressive;
         previousBoard = new int[height][width];
 
-        lokiDB = new FolderDB(path);
+        lokiDB = new FolderDB(folderPath);
+    }
+
+    // File DB.
+    public Loki(String folderPath, String filename, int width, int height, boolean aggressive) {
+        size = width <= height ? width : height;
+        this.width = width;
+        this.height = height;
+        MoveData.aggressive = aggressive;
+        previousBoard = new int[height][width];
+
+        lokiDB = new FileDB(folderPath, filename);
     }
 
     // TODO: Implement SQL DB.
@@ -87,14 +97,9 @@ public class Loki {
 
                             // Get available moves for current hash from loki db and add do data.
                             ArrayList<MoveData> availableMoves = lokiDB.getAvailableMovesFromDB(hash, startX, startY,
-                                    (searchPatternMirror == 1 ? true : false), searchPatternRotation, searchWidth);
+                                    searchPatternMirror == 1, searchPatternRotation, searchWidth);
                             for (MoveData m : availableMoves) {
-                                Point move = m.getMove();
-
-                                // If move available, add MoveData to data list.
-                                if (board[move.y][move.x] == 0) {
-                                    data.add(m);
-                                }
+                                data.add(m);
                             }
 
                             startX++;
@@ -189,6 +194,9 @@ public class Loki {
         // Clear previous board and all registered move data.
         previousBoard = new int[height][width];
         gameData.clear();
+
+        // Signal DB that all data has been stored.
+        lokiDB.addToDBDone();
 
         // End time of storing process.
         long endTime = System.currentTimeMillis();

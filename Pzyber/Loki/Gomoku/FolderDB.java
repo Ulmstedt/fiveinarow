@@ -3,7 +3,7 @@
  *
  * FolderDB.java
  * Created on 2015-12-31
- * Version 0.3.0 Beta
+ * Version 0.5.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -66,6 +66,11 @@ public class FolderDB implements ILokiDB {
     }
 
     @Override
+    public void addToDBDone() {
+
+    }
+
+    @Override
     public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror,
                                                        int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
@@ -82,7 +87,7 @@ public class FolderDB implements ILokiDB {
                     String[] pos = posDot[0].split("_");
                     Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
-                    // Scale, de-mirror and de-rotate move.
+                    // De-rotate, de-mirror and de-scale move.
                     move = Utils.scaleMirrorAndRotate(move, startX, startY, mirror, rotations, size);
 
                     // Get draws, losses and wins.
