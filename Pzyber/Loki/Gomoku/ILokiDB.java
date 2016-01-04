@@ -1,12 +1,12 @@
 /**
- * Loki Learning AI
+ * Loki AI
  *
  * ILokiDB.java
  * Created on 2015-12-31
- * Version 0.2.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
- * © 2015 Jimmy Nordström.
+ * © 2015-2016 Jimmy Nordström.
  *
  * Licenced under GNU GPLv3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -22,5 +22,6 @@ import java.util.ArrayList;
 public interface ILokiDB {
     void addToDB(String hash, Point move, byte result);
 
-    ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size);
+    ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror, int rotations,
+                                                int size);
 }

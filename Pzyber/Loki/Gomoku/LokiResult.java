@@ -1,12 +1,12 @@
 /**
- * Loki Learning AI
+ * Loki AI
  *
  * LokiResult.java
  * Created on 2015-12-28
- * Version 0.2.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
- * © 2015 Jimmy Nordström.
+ * © 2015-2016 Jimmy Nordström.
  *
  * Licenced under GNU GPLv3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -40,9 +40,9 @@ public class LokiResult {
 
     public int[][] getCalculatedDataRoundedScaled(int scale) {
         int[][] calculatedDataRounded = new int[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                calculatedDataRounded[i][j] = Math.round(calculatedData[i][j] * scale);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                calculatedDataRounded[y][x] = Math.round(calculatedData[y][x] * scale);
             }
         }
         return calculatedDataRounded;

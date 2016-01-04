@@ -1,12 +1,12 @@
 /**
- * Loki Learning AI
- *
+ * Loki AI
+ * <p/>
  * GameData.java
  * Created on 2015-12-28
- * Version 0.2.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
- * © 2015 Jimmy Nordström.
+ * © 2015-2016 Jimmy Nordström.
  *
  * Licenced under GNU GPLv3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -30,11 +30,11 @@ public class GameData {
     }
 
     public int[][] getBoard() {
-        return board;
+        return Utils.cloneMatrix(board);
     }
 
     public Point getMove() {
-        return move;
+        return new Point(move.x, move.y);
     }
 
     public int getID() {

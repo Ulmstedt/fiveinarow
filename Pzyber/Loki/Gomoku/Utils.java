@@ -1,12 +1,12 @@
 /**
- * Loki Learning AI
+ * Loki AI
  *
  * Utils.java
  * Created on 2015-12-30
- * Version 0.2.0 Beta
+ * Version 0.4.0 Beta
  *
  * Written by Jimmy Nordström.
- * © 2015 Jimmy Nordström.
+ * © 2015-2016 Jimmy Nordström.
  *
  * Licenced under GNU GPLv3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -17,52 +17,84 @@
 package Pzyber.Loki.Gomoku;
 
 import java.awt.Point;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Utils {
-    public static String calculateHash(int[][] board, int flippidwith, int startX, int startY, int endX, int endY, int maxID) {
-        return getBoardAsString(board, flippidwith, startX, startY, endX, endY, maxID);
+    public static String calculateHash(int[][] searchPattern, int flipIDBy) {
+        // Get search pattern as String.
+        String stringboard = getSearchPatternAsString(searchPattern, flipIDBy);
 
-        /*String stringboard = getBoardAsString(board, flippidwith, startX, startY, endX, endY);
-
+        // Calculate and return SHA hash.
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(stringboard.getBytes("UTF-8"));
+            MessageDigest md = MessageDigest.getInstance("SHA");
+            md.update(stringboard.getBytes());
             byte[] digest = md.digest();
-            System.out.println(new String(digest, "UTF-8"));
-            return new String(digest, "UTF-8");
-        }
-        catch (NoSuchAlgorithmException e) {
+
+            // Convert to String.
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : digest) {
+                if ((0xff & b) < 0x10) {
+                    hexString.append("0" + Integer.toHexString((0xFF & b)));
+                } else {
+                    hexString.append(Integer.toHexString(0xFF & b));
+                }
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
             return stringboard;
         }
-        catch (UnsupportedEncodingException e) {
-            return stringboard;
+    }
+
+    public static int[][] changeToYXBoard(int[][] board) {
+        int width = board[0].length;
+        int height = board.length;
+
+        int[][] fixedBoard = new int[height][width];
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                fixedBoard[y][x] = board[x][y];
+            }
         }
 
-        return stringboard;*/
+        return fixedBoard;
     }
 
     public static int[][] cloneMatrix(int[][] matrix) {
-        int[][] newMatrix = new int[matrix.length][];
+        int[][] clonedMatrix = new int[matrix.length][];
 
         for (int i = 0; i < matrix.length; i++) {
-            newMatrix[i] = matrix[i].clone();
+            clonedMatrix[i] = matrix[i].clone();
         }
 
-        return newMatrix;
+        return clonedMatrix;
     }
 
-    private static String getBoardAsString(int[][] board, int flippidby, int startX, int startY, int endX, int endY, int maxID) {
+    public static int[][] getSearchPattern(int[][] board, int startX, int startY, int endX, int endY) {
+        int[][] searchPattern = new int[(endY - startY) + 1][(endX - startX) + 1];
+
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                searchPattern[y - startY][x - startX] = board[y][x];
+            }
+        }
+
+        return searchPattern;
+    }
+
+    public static String getSearchPatternAsString(int[][] searchPattern, int flipIDBy) {
         String result = "";
 
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                int value = board[i][j];
+        for (int y = 0; y < searchPattern.length; y++) {
+            for (int x = 0; x < searchPattern[0].length; x++) {
+                int value = searchPattern[y][x];
 
                 // Flipp id.
-                if (flippidby > 0) {
-                    value += flippidby;
-                    if (value > maxID) {
-                        value = value - maxID;
+                if (value > 0 && flipIDBy > 0) {
+                    value += flipIDBy;
+                    if (value > 2) {
+                        value = value - 2;
                     }
                 }
 
@@ -73,59 +105,87 @@ public class Utils {
         return result;
     }
 
-    public static boolean hasAdjecentMoveOrFullSize(int[][] board, int startX, int startY, int endX, int endY, int width, int height) {
-        if (startX == 0 && startY == 0 && endX == width - 1 && endY == height - 1) {
+    public static Point getMoveByBoardComparison(int[][] previous, int[][] current) {
+        for (int y = 0; y < current.length; y++) {
+            for (int x = 0; x < current[0].length; x++) {
+                if (current[y][x] > previous[y][x]) {
+                    return new Point(x, y);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean hasAdjecentMoveOrFullSize(int[][] board, int startX, int startY, int endX, int endY) {
+        if (startX == 0 && startY == 0 && endX == board[0].length - 1 && endY == board.length - 1) {
             return true;
         }
 
         int value = 0;
-        for (int i = startX; i <= endX; i++) {
-            for (int j = startY; j <= endY; j++) {
-                value += board[i][j];
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                value += board[y][x];
             }
         }
         return value > 0;
     }
 
-    public static int[][] rotateBoardClockwise(int[][] board, int size) {
-        int[][] rotated = new int[size][size];
+    public static Point mirrorMoveVertically(Point move, int size) {
+        return new Point((size - 1) - move.x, move.y);
+    }
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                rotated[i][j] = board[size - j - 1][i];
+    public static int[][] mirrorSearchPatternVertically(int[][] searchPattern) {
+        int size = searchPattern.length;
+        int[][] mirrored = new int[size][size];
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                mirrored[y][x] = searchPattern[y][(size - 1) - x];
             }
         }
 
-        return rotated;
+        return mirrored;
     }
 
-    // x = y, y = (size - 1) - x
+    public static int[][] rotateSearchPatternClockwise(int[][] searchPatern) {
+        int size = searchPatern.length;
+        int[][] rotatedBoard = new int[size][size];
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                rotatedBoard[y][x] = searchPatern[(size - 1) - x][y];
+            }
+        }
+
+        return rotatedBoard;
+    }
+
     @SuppressWarnings("SuspiciousNameCombination")
     public static Point rotateMoveAntiClockwise(Point move, int size) {
         return new Point(move.y, size - 1 - move.x);
     }
 
-    // x = (size - 1) - y, y = x
     @SuppressWarnings("SuspiciousNameCombination")
     public static Point rotateMoveClockwise(Point move, int size) {
         return new Point(size - 1 - move.y, move.x);
     }
 
-    public static Point scaleAndRotate(Point move, int startX, int startY, int rotations, int size) {
-        // Scale move to board.
-        move = new Point(startX + move.x, startY + move.y);
+    public static Point scaleMirrorAndRotate(Point move, int startX, int startY, boolean mirror, int rotations,
+                                             int size) {
+        // Copy to new point.
+        Point m = new Point(move.x, move.y);
 
-        // Rotate move.
-        if (rotations != 1) {
-            for (int k = 4 - rotations + 1; k < 4; k++) {
-                move = Utils.rotateMoveAntiClockwise(move, size);
-            }
-        } else {
-            for (int k = 4 - rotations; k < 4; k++) {
-                move = Utils.rotateMoveClockwise(move, size);
-            }
+        // Rotate.
+        for (int i = 4 - rotations; i < 4; i++) {
+            m = Utils.rotateMoveAntiClockwise(m, size);
         }
 
-        return move;
+        // Mirror.
+        if (mirror) {
+            m = Utils.mirrorMoveVertically(m, size);
+        }
+
+        // Scale m to board and return.
+        return new Point(startX + m.x, startY + m.y);
     }
 }

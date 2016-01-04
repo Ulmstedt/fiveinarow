@@ -1,12 +1,12 @@
 /**
- * Loki Learning AI
+ * Loki AI
  *
  * FolderDB.java
  * Created on 2015-12-31
- * Version 0.2.0 Beta
+ * Version 0.3.0 Beta
  *
  * Written by Jimmy Nordström.
- * © 2015 Jimmy Nordström.
+ * © 2015-2016 Jimmy Nordström.
  *
  * Licenced under GNU GPLv3.
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -66,7 +66,8 @@ public class FolderDB implements ILokiDB {
     }
 
     @Override
-    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size) {
+    public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror,
+                                                       int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
 
         String baseHashPath = path + "/" + hash;
@@ -81,14 +82,11 @@ public class FolderDB implements ILokiDB {
                     String[] pos = posDot[0].split("_");
                     Point move = new Point(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]));
 
-                    // Scale and rotate move.
-                    move = Utils.scaleAndRotate(move, startX, startY, rotations, size);
+                    // Scale, de-mirror and de-rotate move.
+                    move = Utils.scaleMirrorAndRotate(move, startX, startY, mirror, rotations, size);
 
                     // Get draws, losses and wins.
                     long[] dbData = readDataFromDBFile(baseHashPath + "/" + m);
-                    long draws = dbData[DRAWS];
-                    long losses = dbData[LOSSES];
-                    long wins = dbData[WINS];
 
                     // Add to available moves.
                     availableMoves.add(new MoveData(move, dbData[DRAWS], dbData[LOSSES], dbData[WINS]));
