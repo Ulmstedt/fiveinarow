@@ -27,8 +27,8 @@ public class Game {
     private ArrayList<Point> moveHistoryList;
     private Point mostRecentMove;
 
-    public final int DEBUG_LEVEL = 2; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
-    public final boolean SHOW_PLAY_ORDER = true; // 1 to show which order the plays were in
+    public final int DEBUG_LEVEL = 0; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final boolean SHOW_PLAY_ORDER = false; // 1 to show which order the plays were in
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -67,7 +67,7 @@ public class Game {
                     p.roundEnded(winner);
                 }
 
-                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -77,7 +77,7 @@ public class Game {
     private void initGame() {
         this.board = new int[width][height];
         //this.board = AIPlayer.invertMatrix(AIPlayer.setupDiaAt55);
-        //this.board = AIPlayer.invertMatrix(AIPlayer.knownProblem3start);
+        //this.board = AIPlayer.invertMatrix(AIPlayer.winPosTest1);
 
         playerList.add(new Player(1, this));
         //playerList.add(new Player(2, this));

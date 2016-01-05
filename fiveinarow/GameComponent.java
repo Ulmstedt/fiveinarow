@@ -248,7 +248,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
             g2d.fillRect(0, 0, width, height + Constants.PADDING_TOP + Constants.PADDING_BOTTOM);
             g2d.setColor(ColorList.colors.get(winner - 1));
             g2d.setFont(new Font("Serif", Font.BOLD, 50));
-            g2d.drawString("Player " + winner + " wins!", width / 2 - 130, height / 2 - 10);
+            g2d.drawString("Player " + winner + " wins!", width / 2 - 143, height / 2 - 10);
         }
     }
 

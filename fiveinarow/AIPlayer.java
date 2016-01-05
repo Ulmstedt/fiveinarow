@@ -150,6 +150,24 @@ public class AIPlayer extends Player implements IAI {
         {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
         {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
     };
+    static final int[][] winPosTest1 = new int[][]{
+        //0 1  2  3  4  5  6  7  8  9  0  1  2  3  4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
+        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 5
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 6
+        {0, 0, 0, 1, 2, 1, 1, 0, 0, 2, 0, 2, 0, 0, 0},// 7
+        {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 8
+        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 9
+        {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
+    };
     int checkX = 4, checkY = 13, checkLength = 2;
 
     private int width, height;
@@ -197,12 +215,15 @@ public class AIPlayer extends Player implements IAI {
 
     @Override
     public void playRound() {
-        //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         //System.out.println("Setup " + (checkForSetupDiagonal1(AIPlayer.invertMatrix(AIPlayer.setupDiaAt55), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupDiagonal2(AIPlayer.invertMatrix(AIPlayer.setupDia2), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupRow(AIPlayer.invertMatrix(AIPlayer.setupRow), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupCol(AIPlayer.invertMatrix(AIPlayer.setupCol), checkX, checkY, checkLength, 1) ? "found" : "not found"));
-        //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        Point p1 = new Point(2, 0);
+        Point p2 = new Point(0, 2);
+        System.out.println("" + checkWinPossibility(AIPlayer.invertMatrix(AIPlayer.winPosTest1), p1, p2, 1));
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         //System.out.println();
 
         System.out.println("###### START OF ROUND #######################");
@@ -263,7 +284,7 @@ public class AIPlayer extends Player implements IAI {
         System.out.println(timeSpent + " ms.");
 
         //For debugging
-        pointGrid = calculatePointGrid(game.getBoard(), 1);
+        //pointGrid = calculatePointGrid(game.getBoard(), 1);
         System.out.println("###### END OF ROUND #########################");
     }
 
@@ -284,7 +305,7 @@ public class AIPlayer extends Player implements IAI {
             int[][] boardCopy = Utils.cloneMatrix(gameBoard);
             int[][] pGrid = calculatePointGrid(boardCopy, currentID);
             Point p = findBestMove(pGrid);
-            System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
+            //System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
             boardCopy[p.x][p.y] = currentID;
             return simulateGame(boardCopy, currentID, roundsLeft - 1);
         } else {
@@ -305,9 +326,143 @@ public class AIPlayer extends Player implements IAI {
         return new Point(bestX, bestY);
     }
 
+
+    /*
+     Returns 0 if five in a row cant be achieved, 1 if it can and 1 direction is open, and 2 if it can and both directions are open.
+     */
+    private int checkWinPossibility(int[][] board, Point p1, Point p2, int playerID) {
+        int xDistance = p1.x - p2.x;
+        int yDistance = p1.y - p2.y;
+        int length = (Math.abs(xDistance) > Math.abs(yDistance) ? Math.abs(xDistance) : Math.abs(yDistance)) + 1; // length of combo between p1 and p2
+        //Check horizontally
+        if (p1.y == p2.y) {
+            int openLeft = 0, openRight = 0;
+            //Check to the left
+            for (int dx = 1; p1.x - dx >= 0; dx++) {
+                if (board[p1.x - dx][p1.y] == 0 || board[p1.x - dx][p1.y] == playerID) {
+                    openLeft++;
+                } else {
+                    break;
+                }
+            }
+            //Check to the right
+            for (int dx = 1; p2.x + dx < board.length; dx++) {
+                if (board[p2.x + dx][p2.y] == 0 || board[p2.x + dx][p2.y] == playerID) {
+                    openRight++;
+                } else {
+                    break;
+                }
+            }
+            //System.out.println("Max: " + (openLeft + length + openRight) + ", openLeft: " + openLeft + ", openRight: " + openRight);
+            if (openLeft + length + openRight < 5) {
+                //System.out.println("Five in a row is not possible.");
+                return 0;
+            } else if (openLeft >= 1 && openRight >= 1) {
+                //System.out.println("Open in both directions.");
+                return 2;
+            } else if (openLeft >= 1 || openRight >= 1) {
+                //System.out.println("Open in one direction.");
+                return 1;
+            }
+        } //Check vertically
+        else if (p1.x == p2.x) {
+            int openUp = 0, openDown = 0;
+            //Check above
+            for (int dy = 1; p1.y - dy >= 0; dy++) {
+                if (board[p1.x][p1.y - dy] == 0 || board[p1.x][p1.y - dy] == playerID) {
+                    openUp++;
+                } else {
+                    break;
+                }
+            }
+            //Check below
+            for (int dy = 1; p2.y + dy < board[0].length; dy++) {
+                if (board[p2.x][p2.y + dy] == 0 || board[p2.x][p2.y + dy] == playerID) {
+                    openDown++;
+                } else {
+                    break;
+                }
+            }
+            //System.out.println("Max: " + (openAbove + length + openBelow) + ", openAbove: " + openAbove + ", openBelow: " + openBelow);
+            if (openUp + length + openDown < 5) {
+                //System.out.println("Five in a row is not possible.");
+                return 0;
+            } else if (openUp >= 1 && openDown >= 1) {
+                //System.out.println("Open in both directions.");
+                return 2;
+            } else if (openUp >= 1 || openDown >= 1) {
+                //System.out.println("Open in one direction.");
+                return 1;
+            }
+        }//Check diagonal 1 ( \ )
+        else if (p1.x < p2.x && p1.y < p2.y) {
+            int openUpLeft = 0, openDownRight = 0;
+            //Check up left
+            for (int dxy = 1; (p1.x - dxy >= 0 && p1.y - dxy >= 0); dxy++) {
+                if (board[p1.x - dxy][p1.y - dxy] == 0 || board[p1.x - dxy][p1.y - dxy] == playerID) {
+                    openUpLeft++;
+                } else {
+                    break;
+                }
+            }
+            //Check down right
+            for (int dxy = 1; (p2.x + dxy < board.length && p2.y + dxy < board[0].length); dxy++) {
+                if (board[p2.x + dxy][p2.y + dxy] == 0 || board[p2.x + dxy][p2.y + dxy] == playerID) {
+                    openDownRight++;
+                } else {
+                    break;
+                }
+            }
+            //System.out.println("Max: " + (openUpLeft + length + openDownRight) + ", openUpLeft: " + openUpLeft + ", openDownRight: " + openDownRight);
+            if (openUpLeft + length + openDownRight < 5) {
+                //System.out.println("Five in a row is not possible.");
+                return 0;
+            } else if (openUpLeft >= 1 && openDownRight >= 1) {
+                //System.out.println("Open in both directions.");
+                return 2;
+            } else if (openUpLeft >= 1 || openDownRight >= 1) {
+                //System.out.println("Open in one direction.");
+                return 1;
+            }
+        }//Check diagonal 2 ( / )
+        else if (p1.x > p2.x && p1.y < p2.y) {
+            int openUpRight = 0, openDownLeft = 0;
+            //Check up right
+            for (int dxy = 1; (p1.x + dxy < board.length && p1.y - dxy >= 0); dxy++) {
+                if (board[p1.x + dxy][p1.y - dxy] == 0 || board[p1.x + dxy][p1.y - dxy] == playerID) {
+                    openUpRight++;
+                } else {
+                    break;
+                }
+            }
+            //Check down left
+            for (int dxy = 1; (p2.x - dxy >= 0 && p2.y + dxy < board[0].length); dxy++) {
+                if (board[p2.x - dxy][p2.y + dxy] == 0 || board[p2.x - dxy][p2.y + dxy] == playerID) {
+                    openDownLeft++;
+                } else {
+                    break;
+                }
+            }
+            //System.out.println("Max: " + (openUpRight + length + openDownLeft) + ", openUpRight: " + openUpRight + ", openDownLeft: " + openDownLeft);
+            if (openUpRight + length + openDownLeft < 5) {
+                //System.out.println("Five in a row is not possible.");
+                return 0;
+            } else if (openUpRight >= 1 && openDownLeft >= 1) {
+                //System.out.println("Open in both directions.");
+                return 2;
+            } else if (openUpRight >= 1 || openDownLeft >= 1) {
+                //System.out.println("Open in one direction.");
+                return 1;
+            }
+        }
+        return 0;
+    }
+
     private int[][] calculatePointGrid(int[][] board, int playerID) {
         int[][] tempPointGrid = newPointGrid(width, height);
         int[][] tempBoard = Utils.cloneMatrix(board); //Copy board
+        Point[] endPoints;
+        int pointFactor;
         for (int p = 1; p <= game.getNumberOfPlayers(); p++) {
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
@@ -319,17 +474,39 @@ public class AIPlayer extends Player implements IAI {
                         }
                         //Check for setups of length 2-4 and give points accordingly
                         for (int length = 2; length <= 4; length++) {
-                            if (checkForSetupRow(tempBoard, x, y, length, p)) {
-                                tempPointGrid[x][y] += (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
+                            //Row
+                            endPoints = checkForSetupRow(tempBoard, x, y, length, p);
+                            if (endPoints != null) {
+                                pointFactor = checkWinPossibility(tempBoard, endPoints[0], endPoints[1], p);
+                                if (x == 7 && y == 7) {
+//                                    System.out.println("---");
+//                                    System.out.println("P1: (" + endPoints[0].x + ", " + endPoints[0].y + ")");
+//                                    System.out.println("P2: (" + endPoints[1].x + ", " + endPoints[1].y + ")");
+//                                    System.out.println("Point factor: " + pointFactor);
+//                                    System.out.println("Point base: " + (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]));
+//                                    System.out.println("Length: " + length);
+//                                    System.out.println("Player: " + p);
+//                                    System.out.println("---");
+                                }
+                                tempPointGrid[x][y] += pointFactor * (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
                             }
-                            if (checkForSetupCol(tempBoard, x, y, length, p)) {
-                                tempPointGrid[x][y] += (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
+                            //Col
+                            endPoints = checkForSetupCol(tempBoard, x, y, length, p);
+                            if (endPoints != null) {
+                                pointFactor = checkWinPossibility(tempBoard, endPoints[0], endPoints[1], p);
+                                tempPointGrid[x][y] += pointFactor * (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
                             }
-                            if (checkForSetupDiagonal1(tempBoard, x, y, length, p)) {
-                                tempPointGrid[x][y] += (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
+                            //Dia 1
+                            endPoints = checkForSetupDiagonal1(tempBoard, x, y, length, p);
+                            if (endPoints != null) {
+                                pointFactor = checkWinPossibility(tempBoard, endPoints[0], endPoints[1], p);
+                                tempPointGrid[x][y] += pointFactor * (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
                             }
-                            if (checkForSetupDiagonal2(tempBoard, x, y, length, p)) {
-                                tempPointGrid[x][y] += (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
+                            //Dia 2
+                            endPoints = checkForSetupDiagonal2(tempBoard, x, y, length, p);
+                            if (endPoints != null) {
+                                pointFactor = checkWinPossibility(tempBoard, endPoints[0], endPoints[1], p);
+                                tempPointGrid[x][y] += pointFactor * (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
                             }
                         }
                         tempBoard[x][y] = 0;
@@ -354,9 +531,9 @@ public class AIPlayer extends Player implements IAI {
      * @param yc Y to check
      * @param length Length of chain to look for
      * @param ID Player to check for
-     * @return Returns true if setup is found for player [ID]
+     * @return Returns the end points if setup is found for player [ID]
      */
-    public boolean checkForSetupRow(int[][] tiles, int xc, int yc, int length, int ID) {
+    public Point[] checkForSetupRow(int[][] tiles, int xc, int yc, int length, int ID) {
         int lowestX, highestX, lowest, highest;
         //Find lower loop bound
         lowestX = (xc - (length - 1) > 0 ? xc - (length - 1) : 0);
@@ -372,11 +549,11 @@ public class AIPlayer extends Player implements IAI {
                     continue Outer;
                 }
             }
-            //If this is reached, a setup has been found and true is returned
-            return true;
+            //If this is reached, a setup has been found and the end points are returned
+            return new Point[]{new Point(xc + dx, yc), new Point(xc + dx + (length - 1), yc)};
         }
-        //If this is reached, no setup has been found and false is returned
-        return false;
+        //If this is reached, no setup has been found and null is returned
+        return null;
     }
 
     /**
@@ -387,9 +564,9 @@ public class AIPlayer extends Player implements IAI {
      * @param yc Y to check
      * @param length Length of chain to look for
      * @param ID Player to check for
-     * @return Returns true if setup is found for player [ID]
+     * @return Returns the end points if setup is found for player [ID]
      */
-    public boolean checkForSetupCol(int[][] tiles, int xc, int yc, int length, int ID) {
+    public Point[] checkForSetupCol(int[][] tiles, int xc, int yc, int length, int ID) {
         int lowestY, highestY, lowest, highest;
         //Find lower loop bound
         lowestY = (yc - (length - 1) > 0 ? yc - (length - 1) : 0);
@@ -405,11 +582,11 @@ public class AIPlayer extends Player implements IAI {
                     continue Outer;
                 }
             }
-            //If this is reached, a setup has been found and true is returned
-            return true;
+            //If this is reached, a setup has been found and the end points are returned
+            return new Point[]{new Point(xc, yc + dy), new Point(xc, yc + dy + (length - 1))};
         }
-        //If this is reached, no setup has been found and false is returned
-        return false;
+        //If this is reached, no setup has been found and null is returned
+        return null;
     }
 
     /**
@@ -420,9 +597,9 @@ public class AIPlayer extends Player implements IAI {
      * @param yc Y to check
      * @param length Length of chain to look for
      * @param ID Player to check for
-     * @return Returns true if setup is found for player [ID]
+     * @return Returns the end points if setup is found for player [ID]
      */
-    public boolean checkForSetupDiagonal1(int[][] tiles, int xc, int yc, int length, int ID) {
+    public Point[] checkForSetupDiagonal1(int[][] tiles, int xc, int yc, int length, int ID) {
         int lowestX, highestX, lowestY, highestY, lowest, highest;
         //Find lower loop bound
         lowestX = (xc - (length - 1) > 0 ? xc - (length - 1) : 0);
@@ -439,7 +616,7 @@ public class AIPlayer extends Player implements IAI {
 
         //If lowest > highest, a setup is not possible in this position (can happen near corners)
         if (lowest > highest) {
-            return false;
+            return null;
         }
 
         Outer:
@@ -449,11 +626,11 @@ public class AIPlayer extends Player implements IAI {
                     continue Outer;
                 }
             }
-            //If this is reached, a setup has been found and true is returned
-            return true;
+            //If this is reached, a setup has been found and the end points are returned
+            return new Point[]{new Point(xc + dxy, yc + dxy), new Point(xc + dxy + (length - 1), yc + dxy + (length - 1))};
         }
-        //If this is reached, no setup has been found and false is returned
-        return false;
+        //If this is reached, no setup has been found and null is returned
+        return null;
     }
 
     /**
@@ -464,9 +641,9 @@ public class AIPlayer extends Player implements IAI {
      * @param yc Y to check
      * @param length Length of chain to look for
      * @param ID Player to check for
-     * @return Returns true if setup is found for player [ID]
+     * @return Returns the end points if setup is found for player [ID]
      */
-    public boolean checkForSetupDiagonal2(int[][] tiles, int xc, int yc, int length, int ID) {
+    public Point[] checkForSetupDiagonal2(int[][] tiles, int xc, int yc, int length, int ID) {
         int lowestX, highestX, lowestY, highestY, lowest, highest;
         //Find lower loop bound
         lowestX = (xc + (length - 1) < (tiles.length - 1) ? xc + (length - 1) : (tiles.length - 1));
@@ -483,7 +660,7 @@ public class AIPlayer extends Player implements IAI {
 
         //If lowest > highest, a setup is not possible in this position (can happen near corners)
         if (lowest > highest) {
-            return false;
+            return null;
         }
 
         Outer:
@@ -493,11 +670,11 @@ public class AIPlayer extends Player implements IAI {
                     continue Outer;
                 }
             }
-            //If this is reached, a setup has been found and true is returned
-            return true;
+            //If this is reached, a setup has been found and the end points are returned
+            return new Point[]{new Point(xc - dxy, yc + dxy), new Point(xc - dxy - (length - 1), yc + dxy + (length - 1))};
         }
-        //If this is reached, no setup has been found and false is returned
-        return false;
+        //If this is reached, no setup has been found and null is returned
+        return null;
     }
 
     public static int[][] invertMatrix(int[][] matrix) {

@@ -88,7 +88,7 @@ public class FileDB implements ILokiDB {
     public ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror,
                                                        int rotations, int size) {
         ArrayList<MoveData> availableMoves = new ArrayList<>();
-
+        
         if (Files.exists(fs.getPath(hash))) {
             try {
                 // Get list of available moves from Loki DB.
@@ -114,7 +114,6 @@ public class FileDB implements ILokiDB {
             } catch (IOException ignored) {
             }
         }
-
         return availableMoves;
     }
 
