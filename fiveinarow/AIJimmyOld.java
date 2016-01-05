@@ -50,7 +50,14 @@ public class AIJimmyOld extends Player implements IAI{
 
         // Play move.
         Point move = CalculateMove(Spelplan, getID() - 1, random);
-        game.setTile(move.x, move.y, ID);
+        try{
+            game.setTile(move.x, move.y, ID);
+        }catch (ArrayIndexOutOfBoundsException ignored){
+            Point p;
+            do{
+                p = new Point(random.nextInt(game.getWidth()), random.nextInt(game.getHeight()));
+            }while(board[p.x][p.y] != 0);
+        }
         game.incrementRoundCount();
         game.nextPlayer();
     }
