@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.Players;
 
 import java.awt.Point;
 

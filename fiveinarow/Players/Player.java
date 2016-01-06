@@ -1,5 +1,6 @@
-package fiveinarow;
+package fiveinarow.Players;
 
+import fiveinarow.Game.Game;
 import java.awt.Point;
 
 /**

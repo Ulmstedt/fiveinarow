@@ -1,5 +1,12 @@
-package fiveinarow;
+package fiveinarow.GUI;
 
+import fiveinarow.Game.Constants.ColorList;
+import fiveinarow.Game.GameListener;
+import fiveinarow.Game.Constants.Constants;
+import fiveinarow.Game.Game;
+import fiveinarow.Game.WinnerHistory;
+import fiveinarow.Players.IAI;
+import fiveinarow.Players.Player;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -37,7 +44,6 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         this.height = Constants.SQUARE_SIZE * game.getHeight() + Constants.PADDING_TOP + Constants.LINE_THICKNESS + Constants.PADDING_BOTTOM;
         addMouseListener(this);
         addKeyBindings();
-        ColorList.initColors();
     }
 
     private void addKeyBindings() {
@@ -173,19 +179,24 @@ public class GameComponent extends JComponent implements GameListener, MouseList
 
         g2d.drawString("Total:  " + player1StringTotal + " / " + player2StringTotal + "  |  Last " + winnerHistory.getHistoryLength() + " games:  " + player1StringRecent + " / " + player2StringRecent, 3, height - 5);
 
-        int[][] AIScoreGrid = game.getPlayerList().get(1).getPointGrid();
-        int highestScore = game.getPlayerList().get(1).findHighestScore();
-
         if (game.DEBUG_LEVEL >= 1) {
+            int[][] AIScoreGrid = game.getPlayerList().get(game.HEATMAP_PID - 1).getPointGrid();
+            int highestScore = game.getPlayerList().get(game.HEATMAP_PID - 1).findHighestScore();
             //Draw heatmap of bots decision
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
                     g2d.setColor(new Color((int) (((double) AIScoreGrid[x][y] / (double) highestScore) * 255), 50, 120));
                     g2d.fillRect(x * Constants.SQUARE_SIZE, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE);
+                    if (game.DEBUG_LEVEL >= 2) {
+                        //Draw AI's  score grid (for debugging)
+                        g2d.setColor(Color.BLACK);
+                        g2d.setFont(new Font("Serif", Font.BOLD, 16));
+                        g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 28, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 16);
+                    }
                 }
             }
         } else {
-            //g2d.setColor(new Color(0,92,220));
+            //Draw background
             g2d.setColor(new Color(0, 50, 120));
             g2d.fillRect(0, Constants.PADDING_TOP, game.getWidth() * Constants.SQUARE_SIZE, game.getHeight() * Constants.SQUARE_SIZE); // FUNKAR EJ
         }
@@ -205,13 +216,16 @@ public class GameComponent extends JComponent implements GameListener, MouseList
             for (int x = 0; x < game.getWidth(); x++) {
                 for (int y = 0; y < game.getHeight(); y++) {
                     if (game.getTile(x, y) == p) {
+                        //Draw border around most recent move
                         if (mostRecentMove.x == x && mostRecentMove.y == y) {
                             g2d.setColor(Color.ORANGE);
                             g2d.drawRect(x * Constants.SQUARE_SIZE + 3, y * Constants.SQUARE_SIZE + Constants.PADDING_TOP + 3, Constants.SQUARE_SIZE - 4, Constants.SQUARE_SIZE - 4);
                         }
-                        //g2d.setColor(colors[x][y]); //Random colors
-                        //Draw border around most recent move
-                        g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1)); //Standard colors
+                        if (game.USE_RANDOM_COLORS >= 1) {
+                            g2d.setColor(colors[x][y]); //Random colors                            
+                        } else {
+                            g2d.setColor(ColorList.colors.get(p % ColorList.colors.size() - 1)); //Standard colors
+                        }
                         //Draw markers
                         if (p <= 2) {
                             g2d.setFont(new Font("Monospaced", Font.BOLD, 70));
@@ -221,12 +235,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
                             g2d.drawString("" + p, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 10, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + 15 + Constants.PADDING_TOP);
                         }
                     }
-                    if (game.DEBUG_LEVEL >= 2) {
-                        //Draw AI's  score grid (for debugging)
-                        g2d.setColor(Color.BLACK);
-                        g2d.setFont(new Font("Serif", Font.BOLD, 16));
-                        g2d.drawString("" + AIScoreGrid[x][y], Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * x - 28, Constants.SQUARE_SIZE / 2 + Constants.SQUARE_SIZE * y + Constants.PADDING_TOP - 16);
-                    }
+
                 }
             }
         }

@@ -1,5 +1,10 @@
-package fiveinarow;
+package fiveinarow.Game;
 
+import fiveinarow.Game.Constants.ColorList;
+import fiveinarow.Players.IObserver;
+import fiveinarow.Players.IAI;
+import fiveinarow.Players.Player;
+import fiveinarow.Players.Jasmin.AIJasmin;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -14,7 +19,7 @@ public class Game {
     private final ArrayList<Player> playerList;
     private final ArrayList<IObserver> observerList;
     private Player currentPlayer;
-    private WinnerHistory winnerHistory;
+    private final WinnerHistory winnerHistory;
 
     private final int width, height;
     private int winner, roundCount;
@@ -28,8 +33,10 @@ public class Game {
     private ArrayList<Point> moveHistoryList;
     private Point mostRecentMove;
 
-    public final int DEBUG_LEVEL = 2; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final int DEBUG_LEVEL = 0; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
+    public final int HEATMAP_PID = 2; // Player to show heatmap for
     public final boolean SHOW_PLAY_ORDER = true; // true to show which order the plays were in
+    public final int USE_RANDOM_COLORS = 0; // 0 = normal colors, 1 = random with the 2 standard colors, 2 = completely random colors
 
     public Game(int width, int height) {
         this.gameListeners = new ArrayList<>();
@@ -85,7 +92,7 @@ public class Game {
         //playerList.add(new Player(2, this));
         //playerList.add(new AIPlayer(1, this));
         //playerList.add(new AILoki(1, this, true));
-        playerList.add(new AIPlayer(2, this));
+        playerList.add(new AIJasmin(2, this));
         //playerList.add(new AILoki(2, this, false));
         //playerList.add(new AIJohan(2, this, false));
         //playerList.add(new AIPlayer(3, this));
@@ -94,7 +101,9 @@ public class Game {
         this.playerStarted = 0;
         this.currentPlayer = playerList.get(playerStarted);
         //currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
-        this.colors = generateRandomColors(); //Random colors
+        if (USE_RANDOM_COLORS >= 1) {
+            this.colors = generateRandomColors(); //Random colors
+        }
         this.moveHistoryList = new ArrayList<>();
         this.mostRecentMove = new Point(-1, -1);
     }
@@ -108,7 +117,9 @@ public class Game {
         winner = 0;
         pointsGiven = false;
         roundCount = 0;
-        colors = generateRandomColors(); //Random colors
+        if (USE_RANDOM_COLORS >= 1) {
+            colors = generateRandomColors(); //Random colors
+        }
         moveHistoryList = new ArrayList<>();
         mostRecentMove = new Point(-1, -1);
 
@@ -125,8 +136,12 @@ public class Game {
         Color[][] color = new Color[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                //color[i][j] = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)); //Random colors
-                color[i][j] = (Math.random() >= 0.5 ? Color.BLUE : Color.RED); //Random red/blue
+                if (USE_RANDOM_COLORS == 1) {
+                    color[i][j] = (Math.random() >= 0.5 ? ColorList.colors.get(0) : ColorList.colors.get(1)); //Random with just the standard colors
+
+                } else {
+                    color[i][j] = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255)); //Random colors
+                }
             }
         }
         return color;

@@ -14,11 +14,12 @@
  * If you have questions, contact me at pzyber@pzyber.net
  */
 
-package fiveinarow;
+package fiveinarow.Players;
 
 import Pzyber.Loki.Gomoku.Loki;
 import Pzyber.Loki.Gomoku.LokiResult;
 import Pzyber.Loki.Gomoku.Utils;
+import fiveinarow.Game.Game;
 
 import java.awt.Point;
 
