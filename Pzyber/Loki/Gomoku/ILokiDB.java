@@ -3,7 +3,7 @@
  *
  * ILokiDB.java
  * Created on 2015-12-31
- * Version 0.5.0 Beta
+ * Version 0.6.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.

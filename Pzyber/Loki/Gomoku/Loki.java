@@ -3,7 +3,7 @@
  *
  * Loki.java
  * Created on 2015-12-28
- * Version 0.5.0 Beta
+ * Version 0.6.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -235,6 +235,7 @@ public class Loki {
             resultData = getDataFromDB(clonedBoard, searchWidth);
 
             if (resultData != null) {
+                // Go through result data and add to data.
                 for (MoveData md : resultData) {
                     Point move = md.getMove();
                     if (data.containsKey(move)) {
@@ -245,13 +246,19 @@ public class Loki {
                         existingMoveData.addWins(md.getWins());
                     } else {
                         data.put(move, md);
-
-                        // Check if any win chance.
-                        if (md.thoughtResult() > 0) {
-                            searchLevelOfResult = searchWidth;
-                            positiveSearchResultFound = true;
-                        }
                     }
+                }
+
+                // Check if any win chance, if not clear data an proceed to the next level.
+                for(Point p : data.keySet()){
+                    if(data.get(p).thoughtResult() > 0)
+                    {
+                        searchLevelOfResult = searchWidth;
+                        positiveSearchResultFound = true;
+                    }
+                }
+                if(!positiveSearchResultFound){
+                    data.clear();
                 }
             }
 
