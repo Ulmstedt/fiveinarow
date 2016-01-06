@@ -67,7 +67,7 @@ public class Game {
                     p.roundEnded(winner);
                 }
 
-                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -84,7 +84,7 @@ public class Game {
         //playerList.add(new AIPlayer(1, this));
         //playerList.add(new AILoki(1, this));
         playerList.add(new AIPlayer(2, this));
-        //playerList.add(new AILoki(2, this));
+        //playerList.add(new AILoki(2, this, false));
         //playerList.add(new AIJohan(2, this, false));
         //playerList.add(new AIPlayer(3, this));
         //playerList.add(new AIJimmyOld(2, this));

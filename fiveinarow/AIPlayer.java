@@ -215,15 +215,15 @@ public class AIPlayer extends Player implements IAI {
 
     @Override
     public void playRound() {
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         //System.out.println("Setup " + (checkForSetupDiagonal1(AIPlayer.invertMatrix(AIPlayer.setupDiaAt55), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupDiagonal2(AIPlayer.invertMatrix(AIPlayer.setupDia2), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupRow(AIPlayer.invertMatrix(AIPlayer.setupRow), checkX, checkY, checkLength, 1) ? "found" : "not found"));
         //System.out.println("Setup " + (checkForSetupCol(AIPlayer.invertMatrix(AIPlayer.setupCol), checkX, checkY, checkLength, 1) ? "found" : "not found"));
-        Point p1 = new Point(2, 0);
-        Point p2 = new Point(0, 2);
-        System.out.println("" + checkWinPossibility(AIPlayer.invertMatrix(AIPlayer.winPosTest1), p1, p2, 1));
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //Point p1 = new Point(2, 0);
+        //Point p2 = new Point(0, 2);
+        //System.out.println("" + checkWinPossibility(AIPlayer.invertMatrix(AIPlayer.winPosTest1), p1, p2, 1));
+        //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         //System.out.println();
 
         System.out.println("###### START OF ROUND #######################");
@@ -305,7 +305,7 @@ public class AIPlayer extends Player implements IAI {
             int[][] boardCopy = Utils.cloneMatrix(gameBoard);
             int[][] pGrid = calculatePointGrid(boardCopy, currentID);
             Point p = findBestMove(pGrid);
-            //System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
+            System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
             boardCopy[p.x][p.y] = currentID;
             return simulateGame(boardCopy, currentID, roundsLeft - 1);
         } else {
