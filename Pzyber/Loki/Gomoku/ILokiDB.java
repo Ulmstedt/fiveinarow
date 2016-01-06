@@ -3,7 +3,7 @@
  *
  * ILokiDB.java
  * Created on 2015-12-31
- * Version 0.3.0 Beta
+ * Version 0.6.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -22,5 +22,8 @@ import java.util.ArrayList;
 public interface ILokiDB {
     void addToDB(String hash, Point move, byte result);
 
-    ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, int rotations, int size);
+    void addToDBDone();
+
+    ArrayList<MoveData> getAvailableMovesFromDB(String hash, int startX, int startY, boolean mirror, int rotations,
+                                                int size);
 }

@@ -3,7 +3,7 @@
  *
  * Utils.java
  * Created on 2015-12-30
- * Version 0.3.0 Beta
+ * Version 0.6.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -22,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Utils {
     public static String calculateHash(int[][] searchPattern, int flipIDBy) {
-        /*// Get search pattern as String.
+        // Get search pattern as String.
         String stringboard = getSearchPatternAsString(searchPattern, flipIDBy);
 
         // Calculate and return SHA hash.
@@ -43,16 +43,14 @@ public class Utils {
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
             return stringboard;
-        }*/
-
-        return getSearchPatternAsString(searchPattern, flipIDBy);
+        }
     }
 
-    public static int[][] changeToYXBoard(int[][] board){
+    public static int[][] changeToYXBoard(int[][] board) {
         int width = board[0].length;
         int height = board.length;
 
-        int[][] fixedBoard = new int [height][width];
+        int[][] fixedBoard = new int[height][width];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -77,7 +75,7 @@ public class Utils {
         int[][] searchPattern = new int[(endY - startY) + 1][(endX - startX) + 1];
 
         for (int y = startY; y <= endY; y++) {
-            for (int x = startX; x <= endX; x++){
+            for (int x = startX; x <= endX; x++) {
                 searchPattern[y - startY][x - startX] = board[y][x];
             }
         }
@@ -107,10 +105,10 @@ public class Utils {
         return result;
     }
 
-    public static Point getMoveByBoardComparison(int[][] previous, int[][] current){
-        for(int y = 0; y < current.length; y++){
-            for(int x = 0; x < current[0].length; x++){
-                if(current[y][x] > previous[y][x]){
+    public static Point getMoveByBoardComparison(int[][] previous, int[][] current) {
+        for (int y = 0; y < current.length; y++) {
+            for (int x = 0; x < current[0].length; x++) {
+                if (current[y][x] > previous[y][x]) {
                     return new Point(x, y);
                 }
             }
@@ -130,6 +128,10 @@ public class Utils {
             }
         }
         return value > 0;
+    }
+
+    public static Point mirrorMoveVertically(Point move, int size) {
+        return new Point((size - 1) - move.x, move.y);
     }
 
     public static int[][] mirrorSearchPatternVertically(int[][] searchPattern) {
@@ -168,12 +170,19 @@ public class Utils {
         return new Point(size - 1 - move.y, move.x);
     }
 
-    public static Point scaleAndRotate(Point move, int startX, int startY, int rotations, int size) {
+    public static Point scaleMirrorAndRotate(Point move, int startX, int startY, boolean mirror, int rotations,
+                                             int size) {
         // Copy to new point.
         Point m = new Point(move.x, move.y);
 
+        // Rotate.
         for (int i = 4 - rotations; i < 4; i++) {
             m = Utils.rotateMoveAntiClockwise(m, size);
+        }
+
+        // Mirror.
+        if (mirror) {
+            m = Utils.mirrorMoveVertically(m, size);
         }
 
         // Scale m to board and return.
