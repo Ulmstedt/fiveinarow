@@ -3,7 +3,7 @@
  *
  * FileDB.java
  * Created on 2015-12-31
- * Version 0.5.0 Beta
+ * Version 0.6.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -48,9 +48,10 @@ public class FileDB implements ILokiDB {
 
         // Init and open zip-file.
         env.put("create", "true");
-        p = Paths.get(this.folderPath + "/" + filename);
+        p = Paths.get(folderPath + "/" + filename);
         uri = URI.create("jar:" + p.toUri());
         try {
+            Files.createDirectories(Paths.get(folderPath));
             fs = FileSystems.newFileSystem(uri, env);
         } catch (IOException ignored) {
         }
