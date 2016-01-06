@@ -40,7 +40,7 @@ public class AILoki extends Player implements IAI {
         loki = new Loki(path, game.getWidth(), game.getHeight(), aggressive);
     }
 
-    @Override
+    //@Override
     public void moveMade(Point move) {
         // Register move.
         loki.registerMoveInDB(Utils.changeToYXBoard(game.getBoard()));
@@ -61,7 +61,7 @@ public class AILoki extends Player implements IAI {
         game.nextPlayer();
     }
 
-    @Override
+    //@Override
     public void roundEnded(int winner) {
         // Store registered moves to Loki DB.
         loki.storeGameDataInDB(winner);

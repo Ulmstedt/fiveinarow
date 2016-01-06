@@ -1,10 +1,11 @@
 package fiveinarow.Game;
 
 import fiveinarow.Game.Constants.ColorList;
-import fiveinarow.Players.IObserver;
 import fiveinarow.Players.IAI;
-import fiveinarow.Players.Player;
+import fiveinarow.Players.IObserver;
 import fiveinarow.Players.Jasmin.AIJasmin;
+import fiveinarow.Players.Jasmin.JasminUtils;
+import fiveinarow.Players.Player;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class Game {
     private Point mostRecentMove;
 
     public final int DEBUG_LEVEL = 0; // 0 = off, 1 = show heatmap, 2 = show heatmap + scores
-    public final int HEATMAP_PID = 2; // Player to show heatmap for
+    public final int HEATMAP_PID = 2; // Player ID to show heatmap for
     public final boolean SHOW_PLAY_ORDER = true; // true to show which order the plays were in
     public final int USE_RANDOM_COLORS = 0; // 0 = normal colors, 1 = random with the 2 standard colors, 2 = completely random colors
 
@@ -76,7 +77,7 @@ public class Game {
                     o.roundEnded(winner);
                 }
 
-                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -85,7 +86,7 @@ public class Game {
 
     private void initGame() {
         this.board = new int[width][height];
-        //this.board = AIPlayer.invertMatrix(AIPlayer.setupDiaAt55);
+        //this.board = JasminUtils.invertMatrix(AIJasmin.problemBoard);
         //this.board = AIPlayer.invertMatrix(AIPlayer.winPosTest1);
 
         playerList.add(new Player(1, this));
@@ -99,8 +100,8 @@ public class Game {
         //playerList.add(new AIJimmyOld(2, this));
 
         this.playerStarted = 0;
-        this.currentPlayer = playerList.get(playerStarted);
-        //currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
+        //this.currentPlayer = playerList.get(playerStarted);
+        currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
         if (USE_RANDOM_COLORS >= 1) {
             this.colors = generateRandomColors(); //Random colors
         }
@@ -128,8 +129,8 @@ public class Game {
         if (playerStarted == playerList.size()) {
             playerStarted = 0;
         }
-        currentPlayer = playerList.get(playerStarted);
-        //currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
+        //currentPlayer = playerList.get(playerStarted);
+        currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
     }
 
     private Color[][] generateRandomColors() {

@@ -13,22 +13,40 @@ import java.util.ArrayList;
  */
 public class AIJasmin extends Player implements IAI {
 
-    static final int[][] winPosTest1 = new int[][]{
+    public static final int[][] boardTemplate = new int[][]{
         //0 1  2  3  4  5  6  7  8  9  0  1  2  3  4
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
-        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 2
-        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
-        {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
-        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 5
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 5
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 6
-        {0, 0, 0, 1, 2, 1, 1, 0, 0, 2, 0, 2, 0, 0, 0},// 7
-        {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 8
-        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 9
-        {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0},// 0
-        {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
-        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},// 2
-        {0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 7
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 8
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 9
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
+    };
+    public static final int[][] problemBoard = new int[][]{
+        //0 1  2  3  4  5  6  7  8  9  0  1  2  3  4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
+        {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 4
+        {0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0},// 5
+        {0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0},// 6
+        {0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0},// 7
+        {0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0},// 8
+        {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},// 9
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 0
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 1
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},// 3
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 4
     };
     int checkX = 4, checkY = 13, checkLength = 2;
@@ -38,12 +56,22 @@ public class AIJasmin extends Player implements IAI {
     //Defensive
     private final int WIN_SETUP_SCORE = 50000;
     private final int WIN_BLOCK_SCORE = 12000;
+    private final int FOUR_SETUP_SCORE = 2500;
+    private final int FOUR_BLOCK_SCORE = 750;
+    private final int THREE_SETUP_SCORE = 500;
+    private final int THREE_BLOCK_SCORE = 400;
+    private final int TWO_SETUP_SCORE = 20;
+    private final int TWO_BLOCK_SCORE = 10;
+    /* Old
+    private final int WIN_SETUP_SCORE = 50000;
+    private final int WIN_BLOCK_SCORE = 12000;
     private final int FOUR_SETUP_SCORE = 3000;
-    private final int FOUR_BLOCK_SCORE = 2500;
+    private final int FOUR_BLOCK_SCORE = 1500;
     private final int THREE_SETUP_SCORE = 400;
     private final int THREE_BLOCK_SCORE = 250;
     private final int TWO_SETUP_SCORE = 20;
     private final int TWO_BLOCK_SCORE = 10;
+    */
     //Aggressive (bad numbers)
     /*private final int WIN_SETUP_SCORE = 5000;
      private final int WIN_BLOCK_SCORE = 1200;
@@ -93,18 +121,10 @@ public class AIJasmin extends Player implements IAI {
 
         pointGrid = calculatePointGrid(gameBoard, this.ID);
         Point p = JasminUtils.findBestMove(pointGrid);
-        currX = p.x;
-        currY = p.y;
+
+        int pointsToSimulate = pointsToSimulate(pointGrid);
         //System.out.println("Heatmap says: (" + p.x + ", " + p.y + ")");
-        int pointsToSimulate = 0;
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                //Check if score is high enough, and if so simulate for playing (x,y), and only simulate if its atleast a 4 setup
-                if (pointGrid[x][y] >= TWO_BLOCK_SCORE && pointGrid[x][y] >= (SIMULATION_INTENSITY * pointGrid[p.x][p.y])) {
-                    pointsToSimulate++;
-                }
-            }
-        }
+
         System.out.println("A maximum of " + pointsToSimulate + " points will be simulated.");
         for (int sim = 1; sim <= pointsToSimulate; sim++) {
             int[][] tempBoard = Utils.cloneMatrix(gameBoard);
@@ -114,8 +134,6 @@ public class AIJasmin extends Player implements IAI {
             int simulatedWinner = simulateGame(tempBoard, this.ID, SIMULATION_DEPTH);
             System.out.println("------ END OF SIMULATION --------------------");
             if (simulatedWinner == 0 || simulatedWinner == this.ID) {
-                currX = p.x;
-                currY = p.y;
                 break;
             }
             System.out.println("Throwing away (" + p.x + ", " + p.y + ")");
@@ -124,9 +142,9 @@ public class AIJasmin extends Player implements IAI {
             p = JasminUtils.findBestMove(pointGrid);
         }
 
-        System.out.print("AI played (" + currX + ", " + currY + "), taking ");
-        if (game.getTile(currX, currY) == 0) {
-            game.setTile(currX, currY, ID);
+        System.out.print("AI played (" + p.x + ", " + p.y + "), taking ");
+        if (game.getTile(p.x, p.y) == 0) {
+            game.setTile(p.x, p.y, ID);
             game.incrementRoundCount();
             game.nextPlayer();
         }
@@ -158,12 +176,27 @@ public class AIJasmin extends Player implements IAI {
             int[][] boardCopy = Utils.cloneMatrix(gameBoard);
             int[][] pGrid = calculatePointGrid(boardCopy, currentID);
             Point p = JasminUtils.findBestMove(pGrid);
+            
             System.out.println("P" + currentID + " played (" + p.x + ", " + p.y + ") - " + (roundsLeft - 1) + " rounds left to simulate.");
             boardCopy[p.x][p.y] = currentID;
             return simulateGame(boardCopy, currentID, roundsLeft - 1);
         } else {
             return 0;
         }
+    }
+
+    private int pointsToSimulate(int[][] pointGrid) {
+        Point p = JasminUtils.findBestMove(pointGrid);
+        int pointsToSimulate = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                //Check if score is high enough, and if so simulate for playing (x,y), and only simulate if its atleast a 4 setup
+                if (pointGrid[x][y] >= TWO_BLOCK_SCORE && pointGrid[x][y] >= (SIMULATION_INTENSITY * pointGrid[p.x][p.y])) {
+                    pointsToSimulate++;
+                }
+            }
+        }
+        return pointsToSimulate;
     }
 
     private int[][] calculatePointGrid(int[][] board, int playerID) {
@@ -186,15 +219,15 @@ public class AIJasmin extends Player implements IAI {
                             endPoints = JasminUtils.checkForSetupRow(tempBoard, x, y, length, p);
                             if (endPoints != null) {
                                 pointFactor = JasminUtils.checkWinPossibility(tempBoard, endPoints[0], endPoints[1], p);
-                                if (x == 7 && y == 7) {
-//                                    System.out.println("---");
-//                                    System.out.println("P1: (" + endPoints[0].x + ", " + endPoints[0].y + ")");
-//                                    System.out.println("P2: (" + endPoints[1].x + ", " + endPoints[1].y + ")");
-//                                    System.out.println("Point factor: " + pointFactor);
-//                                    System.out.println("Point base: " + (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]));
-//                                    System.out.println("Length: " + length);
-//                                    System.out.println("Player: " + p);
-//                                    System.out.println("---");
+                                if (x == -1 && y == 7) {
+                                    System.out.println("---");
+                                    System.out.println("P1: (" + endPoints[0].x + ", " + endPoints[0].y + ")");
+                                    System.out.println("P2: (" + endPoints[1].x + ", " + endPoints[1].y + ")");
+                                    System.out.println("Point factor: " + pointFactor);
+                                    System.out.println("Point base: " + (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]));
+                                    System.out.println("Length: " + length);
+                                    System.out.println("Player: " + p);
+                                    System.out.println("---");
                                 }
                                 tempPointGrid[x][y] += pointFactor * (p == playerID ? SETUP_SCORE[length] : BLOCK_SCORE[length]);
                             }
