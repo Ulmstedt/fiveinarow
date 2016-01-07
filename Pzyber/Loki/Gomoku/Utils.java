@@ -3,7 +3,7 @@
  *
  * Utils.java
  * Created on 2015-12-30
- * Version 0.6.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -35,7 +35,7 @@ public class Utils {
             StringBuilder hexString = new StringBuilder();
             for (byte b : digest) {
                 if ((0xff & b) < 0x10) {
-                    hexString.append("0" + Integer.toHexString((0xFF & b)));
+                    hexString.append("0").append(Integer.toHexString((0xFF & b)));
                 } else {
                     hexString.append(Integer.toHexString(0xFF & b));
                 }
