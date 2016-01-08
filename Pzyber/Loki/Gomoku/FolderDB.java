@@ -3,7 +3,7 @@
  *
  * FolderDB.java
  * Created on 2015-12-31
- * Version 0.6.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -38,8 +38,10 @@ public class FolderDB implements ILokiDB {
 
     private String path;
 
-    public FolderDB(String path) {
+    public FolderDB(String path) throws IOException {
         this.path = path;
+
+        Files.createDirectories(Paths.get(path));
     }
 
     @Override
