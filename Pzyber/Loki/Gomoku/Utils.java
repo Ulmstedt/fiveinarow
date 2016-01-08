@@ -21,9 +21,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Utils {
-    public static String calculateHash(int[][] searchPattern, int flipIDBy) {
+    public static String calculateHash(int[][] searchPattern, int flipIDBy, int id) {
         // Get search pattern as String.
         String stringboard = getSearchPatternAsString(searchPattern, flipIDBy);
+        stringboard += getSearchPatternIDMatchAsString(searchPattern, id);
 
         // Calculate and return SHA hash.
         try {
@@ -99,6 +100,23 @@ public class Utils {
                 }
 
                 result += Integer.toString(value);
+            }
+        }
+
+        return result;
+    }
+
+    public static String getSearchPatternIDMatchAsString(int[][] searchPattern, int id) {
+        String result = "";
+
+        for (int y = 0; y < searchPattern.length; y++) {
+            for (int x = 0; x < searchPattern[0].length; x++) {
+                if(searchPattern[y][x] == id) {
+                    result += Integer.toString(3);
+                }
+                else{
+                    result += Integer.toString(0);
+                }
             }
         }
 

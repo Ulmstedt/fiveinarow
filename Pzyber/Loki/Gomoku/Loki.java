@@ -31,6 +31,7 @@ public class Loki {
     public static final byte DRAW = 0;
     public static final byte LOSS = 1;
     public static final byte WIN = 2;
+    public static final int NO_ID_FLIP = 0;
 
     private int[][] previousBoard;
     private int size;
@@ -96,7 +97,7 @@ public class Loki {
         }
     }
 
-    private ArrayList<MoveData> getMovesFromDB(int[][] board, int searchWidth) {
+    private ArrayList<MoveData> getMovesFromDB(int[][] board, int id, int searchWidth) {
         ArrayList<MoveData> data = new ArrayList<>();
 
         // Search for patterns in DB.
@@ -119,7 +120,7 @@ public class Loki {
                             }
 
                             // Calculate hash.
-                            String hash = Utils.calculateHash(searchPattern, idFlip);
+                            String hash = Utils.calculateHash(searchPattern, idFlip, id);
 
                             // Get available moves for current hash from loki db and add do data if move is available.
                             ArrayList<MoveData> availableMoves = lokiDB.getAvailableMovesFromDB(hash, startX, startY,
@@ -179,13 +180,13 @@ public class Loki {
                         move.x >= startX && move.x <= endX && move.y >= startY && move.y <= endY) {
                     // Get search pattern and calculate hash.
                     int[][] searchPattern = Utils.getSearchPattern(board, startX, startY, endX, endY);
-                    String hash = Utils.calculateHash(searchPattern, 0);
+                    String hash = Utils.calculateHash(searchPattern, NO_ID_FLIP, id);
 
                     // Descale move to board.
                     Point descaledMove = new Point(move.x - startX, move.y - startY);
 
                     // Store data to database.
-                    lokiDB.addToDB(hash, descaledMove, winnerID == 0 ? DRAW : (winnerID == id ? WIN : LOSS));
+                    lokiDB.addToDB(hash, descaledMove, winnerID == DRAW ? DRAW : (winnerID == id ? WIN : LOSS));
                 }
 
                 startX++;
@@ -228,7 +229,7 @@ public class Loki {
         System.out.println("Loki: Game data stored in " + timeSpent + " ms.");
     }
 
-    public LokiResult thinkOfAMove(int[][] board) {
+    public LokiResult thinkOfAMove(int[][] board, int id) {
         // Start time of AI's turn.
         System.out.println("Loki: Thinking out a move...");
         long startTime = System.currentTimeMillis();
@@ -244,7 +245,7 @@ public class Loki {
         while (!positiveSearchResultFound && searchWidth > 1) {
             // Clone board and consider a move.
             int[][] clonedBoard = Utils.cloneMatrix(board);
-            resultData = getMovesFromDB(clonedBoard, searchWidth);
+            resultData = getMovesFromDB(clonedBoard, id, searchWidth);
 
             if (resultData != null) {
                 // Go through result data and add to data.
