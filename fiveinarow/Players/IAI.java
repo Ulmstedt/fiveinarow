@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.Players;
 
 /**
  * Created by pzyber on 2015-12-30.

@@ -14,16 +14,17 @@
  * If you have questions, contact me at pzyber@pzyber.net
  */
 
-package fiveinarow;
+package fiveinarow.Players;
 
 import Pzyber.Loki.Gomoku.Loki;
 import Pzyber.Loki.Gomoku.LokiResult;
 import Pzyber.Loki.Gomoku.Utils;
+import fiveinarow.Game.Game;
 
 import java.awt.Point;
 import java.net.InetAddress;
 
-public class AILoki extends Player implements IAI {
+public class AILoki extends Player implements IAI, IObserver {
     private Loki loki;
 
     // Memory DB
