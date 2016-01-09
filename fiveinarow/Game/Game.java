@@ -1,6 +1,7 @@
 package fiveinarow.Game;
 
 import fiveinarow.Game.Constants.ColorList;
+import fiveinarow.Players.AIJimmyOld;
 import fiveinarow.Players.IAI;
 import fiveinarow.Players.IObserver;
 import fiveinarow.Players.Jasmin.AIJasmin;
@@ -76,8 +77,8 @@ public class Game {
                 for (IObserver o : observerList) {
                     o.roundEnded(winner);
                 }
-
-                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                if(winner == 1)
+                    resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -89,15 +90,15 @@ public class Game {
         //this.board = JasminUtils.invertMatrix(AIJasmin.problemBoard);
         //this.board = AIPlayer.invertMatrix(AIPlayer.winPosTest1);
 
-        playerList.add(new Player(1, this));
+        //playerList.add(new Player(1, this));
         //playerList.add(new Player(2, this));
-        //playerList.add(new AIPlayer(1, this));
+        playerList.add(new AIJasmin(1, this));
         //playerList.add(new AILoki(1, this, true));
-        playerList.add(new AIJasmin(2, this));
+        //playerList.add(new AIJasmin(2, this));
         //playerList.add(new AILoki(2, this, false));
         //playerList.add(new AIJohan(2, this, false));
         //playerList.add(new AIPlayer(3, this));
-        //playerList.add(new AIJimmyOld(2, this));
+        playerList.add(new AIJimmyOld(2, this));
 
         this.playerStarted = 0;
         this.currentPlayer = playerList.get(playerStarted);

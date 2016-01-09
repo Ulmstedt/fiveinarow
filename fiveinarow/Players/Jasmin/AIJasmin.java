@@ -54,10 +54,10 @@ public class AIJasmin extends Player implements IAI {
     private int width, height;
 
     //Defensive
-    private final int WIN_SETUP_SCORE = 50000;
-    private final int WIN_BLOCK_SCORE = 12000;
+    private final int WIN_SETUP_SCORE = 500000;
+    private final int WIN_BLOCK_SCORE = 50000;
     private final int FOUR_SETUP_SCORE = 2500;
-    private final int FOUR_BLOCK_SCORE = 2000;
+    private final int FOUR_BLOCK_SCORE = 1400;
     private final int THREE_SETUP_SCORE = 500;
     private final int THREE_BLOCK_SCORE = 400;
     private final int TWO_SETUP_SCORE = 20;
