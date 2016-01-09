@@ -8,7 +8,7 @@ Simple Gomoku game against AI by Mattias Ulmstedt.
 
 fiveinarow includes the following AIs
 --------------------------------------------------------
-AIPlayer                  by Mattias Ulmstedt (Ulmstedt)
+AIJasmin                  by Mattias Ulmstedt (Ulmstedt)
 
 AILoki (Loki AI)          by Jimmy Nordström (pzyber)
 
