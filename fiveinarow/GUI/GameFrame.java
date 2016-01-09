@@ -1,5 +1,6 @@
-package fiveinarow;
+package fiveinarow.GUI;
 
+import fiveinarow.Game.Game;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

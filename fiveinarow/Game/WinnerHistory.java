@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.Game;
 
 import java.util.HashMap;
 import java.util.Iterator;

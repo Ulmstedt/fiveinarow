@@ -1,4 +1,4 @@
-package fiveinarow;
+package fiveinarow.Players;
 
 import java.awt.Point;
 
@@ -9,9 +9,7 @@ public interface IPlayer {
     int getID();
     int getScore();
     void givePoint();
-    void moveMade(Point move);
     void playRound();
     void resetScore();
-    void roundEnded(int winner);
     void setCurrentChoice(int x, int y);
 }

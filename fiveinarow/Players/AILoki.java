@@ -14,11 +14,12 @@
  * If you have questions, contact me at pzyber@pzyber.net
  */
 
-package fiveinarow;
+package fiveinarow.Players;
 
 import Pzyber.Loki.Gomoku.Loki;
 import Pzyber.Loki.Gomoku.LokiResult;
 import Pzyber.Loki.Gomoku.Utils;
+import fiveinarow.Game.Game;
 
 import java.awt.Point;
 import java.net.InetAddress;
@@ -55,7 +56,7 @@ public class AILoki extends Player implements IAI {
         loki = new Loki(address, port, database, username, password, game.getWidth(), game.getHeight(), aggressive);
     }
 
-    @Override
+    //@Override
     public void moveMade(Point move) {
         // Register move.
         loki.registerMoveInDB(Utils.changeToYXBoard(game.getBoard()));
@@ -76,7 +77,7 @@ public class AILoki extends Player implements IAI {
         game.nextPlayer();
     }
 
-    @Override
+    //@Override
     public void roundEnded(int winner) {
         // Store registered moves to Loki DB.
         loki.storeRegisteredMovesInDB(winner);
