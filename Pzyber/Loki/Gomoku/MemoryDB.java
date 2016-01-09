@@ -3,7 +3,7 @@
  *
  * MemoryDB.java
  * Created on 2015-12-30
- * Version 0.6.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -13,6 +13,7 @@
  *
  * If you have questions, contact me at pzyber@pzyber.net
  */
+
 package Pzyber.Loki.Gomoku;
 
 import java.awt.Point;

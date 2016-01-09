@@ -3,7 +3,7 @@
  *
  * AILoki.java
  * Created on 2015-12-28
- * Version 0.4.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -14,13 +14,15 @@
  * If you have questions, contact me at pzyber@pzyber.net
  */
 
-package fiveinarow;
+package fiveinarow.Players;
 
 import Pzyber.Loki.Gomoku.Loki;
 import Pzyber.Loki.Gomoku.LokiResult;
 import Pzyber.Loki.Gomoku.Utils;
+import fiveinarow.Game.Game;
 
 import java.awt.Point;
+import java.net.InetAddress;
 
 public class AILoki extends Player implements IAI {
     private Loki loki;
@@ -33,13 +35,28 @@ public class AILoki extends Player implements IAI {
     }
 
     // Folder DB
-    public AILoki(int id, Game game, boolean aggressive, String path) {
+    public AILoki(int id, Game game, boolean aggressive, String folderPath) {
         super(id, game);
 
-        loki = new Loki(path, game.getWidth(), game.getHeight(), aggressive);
+        loki = new Loki(folderPath, game.getWidth(), game.getHeight(), aggressive);
     }
 
-    @Override
+    // File DB
+    public AILoki(int id, Game game, boolean aggressive, String folderPath, String filename) {
+        super(id, game);
+
+        loki = new Loki(folderPath, filename, game.getWidth(), game.getHeight(), aggressive);
+    }
+
+    // SQL DB
+    public AILoki(int id, Game game, boolean aggressive, InetAddress address, int port, String database,
+                  String username, String password) {
+        super(id, game);
+
+        loki = new Loki(address, port, database, username, password, game.getWidth(), game.getHeight(), aggressive);
+    }
+
+    //@Override
     public void moveMade(Point move) {
         // Register move.
         loki.registerMoveInDB(Utils.changeToYXBoard(game.getBoard()));
@@ -48,7 +65,7 @@ public class AILoki extends Player implements IAI {
     @Override
     public void playRound() {
         // Get move.
-        LokiResult lr = loki.thinkOfAMove(Utils.changeToYXBoard(game.getBoard()));
+        LokiResult lr = loki.thinkOfAMove(Utils.changeToYXBoard(game.getBoard()), ID);
 
         // Get pointGrid.
         pointGrid = Utils.cloneMatrix(Utils.changeToYXBoard(lr.getCalculatedDataRoundedScaled(999999)));
@@ -60,9 +77,9 @@ public class AILoki extends Player implements IAI {
         game.nextPlayer();
     }
 
-    @Override
+    //@Override
     public void roundEnded(int winner) {
         // Store registered moves to Loki DB.
-        loki.storeGameDataInDB(winner);
+        loki.storeRegisteredMovesInDB(winner);
     }
 }

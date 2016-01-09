@@ -3,7 +3,7 @@
  *
  * FileDB.java
  * Created on 2015-12-31
- * Version 0.6.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -37,24 +37,18 @@ public class FileDB implements ILokiDB {
 
     private FileSystem fs;
     private Map<String, String> env = new HashMap<>();
-    private Path p;
-    private String filename;
     private String folderPath;
     private URI uri;
 
-    public FileDB(String folderPath, String filename) {
+    public FileDB(String folderPath, String filename) throws IOException {
         this.folderPath = folderPath;
-        this.filename = filename;
 
         // Init and open zip-file.
         env.put("create", "true");
-        p = Paths.get(folderPath + "/" + filename);
+        Path p = Paths.get(folderPath + "/" + filename);
         uri = URI.create("jar:" + p.toUri());
-        try {
-            Files.createDirectories(Paths.get(folderPath));
-            fs = FileSystems.newFileSystem(uri, env);
-        } catch (IOException ignored) {
-        }
+        Files.createDirectories(Paths.get(folderPath));
+        fs = FileSystems.newFileSystem(uri, env);
     }
 
     @Override
@@ -64,6 +58,7 @@ public class FileDB implements ILokiDB {
             if (Files.exists(fs.getPath(filePath))) {
                 // Get draws, losses and wins.
                 long[] dbData = readDataFromDBFile(fs, filePath);
+
                 // Write data to file.
                 writeDataToDBFile(fs, filePath, result, dbData[DRAWS], dbData[LOSSES], dbData[WINS]);
             } else {
