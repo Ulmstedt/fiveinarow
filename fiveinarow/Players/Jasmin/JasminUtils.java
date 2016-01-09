@@ -36,7 +36,7 @@ public class JasminUtils {
      Returns 0 if five in a row cant be achieved, 1 if it can and 1 direction is open, and 2 if it can and both directions are open.
      */
     public static int checkWinPossibility(int[][] board, Point p1, Point p2, int playerID) {
-        int TwoOpenEndsRetVal = 5;
+        int TwoOpenEndsRetVal = 2;
         int xDistance = p1.x - p2.x;
         int yDistance = p1.y - p2.y;
         int length = (Math.abs(xDistance) > Math.abs(yDistance) ? Math.abs(xDistance) : Math.abs(yDistance)) + 1; // length of combo between p1 and p2
