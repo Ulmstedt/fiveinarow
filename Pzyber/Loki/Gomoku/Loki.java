@@ -3,7 +3,7 @@
  *
  * Loki.java
  * Created on 2015-12-28
- * Version 0.6.0 Beta
+ * Version 0.7.0 Beta
  *
  * Written by Jimmy Nordström.
  * © 2015-2016 Jimmy Nordström.
@@ -17,16 +17,21 @@
 package Pzyber.Loki.Gomoku;
 
 import java.awt.Point;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Loki {
     public static final byte DRAW = 0;
     public static final byte LOSS = 1;
     public static final byte WIN = 2;
+    public static final int NO_ID_FLIP = 0;
 
     private int[][] previousBoard;
     private int size;
@@ -54,7 +59,11 @@ public class Loki {
         MoveData.aggressive = aggressive;
         previousBoard = new int[height][width];
 
-        lokiDB = new FolderDB(folderPath);
+        try {
+            lokiDB = new FolderDB(folderPath);
+        } catch (IOException e) {
+            lokiDB = new MemoryDB();
+        }
     }
 
     // File DB.
@@ -65,12 +74,30 @@ public class Loki {
         MoveData.aggressive = aggressive;
         previousBoard = new int[height][width];
 
-        lokiDB = new FileDB(folderPath, filename);
+        try {
+            lokiDB = new FileDB(folderPath, filename);
+        } catch (IOException e) {
+            lokiDB = new MemoryDB();
+        }
     }
 
-    // TODO: Implement SQL DB.
+    // SQL DB.
+    public Loki(InetAddress address, int port, String database, String username, String password, int width, int height,
+                boolean aggressive) {
+        size = width <= height ? width : height;
+        this.width = width;
+        this.height = height;
+        MoveData.aggressive = aggressive;
+        previousBoard = new int[height][width];
 
-    private ArrayList<MoveData> getDataFromDB(int[][] board, int searchWidth) {
+        try {
+            lokiDB = new SQLDB(address, port, database, username, password);
+        } catch (SQLException e) {
+            lokiDB = new MemoryDB();
+        }
+    }
+
+    private ArrayList<MoveData> getMovesFromDB(int[][] board, int id, int searchWidth) {
         ArrayList<MoveData> data = new ArrayList<>();
 
         // Search for patterns in DB.
@@ -93,14 +120,12 @@ public class Loki {
                             }
 
                             // Calculate hash.
-                            String hash = Utils.calculateHash(searchPattern, idFlip);
+                            String hash = Utils.calculateHash(searchPattern, idFlip, id);
 
-                            // Get available moves for current hash from loki db and add do data.
+                            // Get available moves for current hash from loki db and add do data if move is available.
                             ArrayList<MoveData> availableMoves = lokiDB.getAvailableMovesFromDB(hash, startX, startY,
                                     searchPatternMirror == 1, searchPatternRotation, searchWidth);
-                            for (MoveData m : availableMoves) {
-                                data.add(m);
-                            }
+                            data.addAll(availableMoves.stream().collect(Collectors.toList()));
 
                             startX++;
                             endX++;
@@ -138,7 +163,7 @@ public class Loki {
         gameData.add(new GameData(clonedBoard, move, id));
     }
 
-    private void storeDataInDB(GameData gd, int winnerID, int searchWidth) {
+    private void storeMovesInDB(GameData gd, int winnerID, int searchWidth) {
         int[][] board = gd.getBoard();
         Point move = gd.getMove();
         int id = gd.getID();
@@ -155,13 +180,13 @@ public class Loki {
                         move.x >= startX && move.x <= endX && move.y >= startY && move.y <= endY) {
                     // Get search pattern and calculate hash.
                     int[][] searchPattern = Utils.getSearchPattern(board, startX, startY, endX, endY);
-                    String hash = Utils.calculateHash(searchPattern, 0);
+                    String hash = Utils.calculateHash(searchPattern, NO_ID_FLIP, id);
 
                     // Descale move to board.
                     Point descaledMove = new Point(move.x - startX, move.y - startY);
 
                     // Store data to database.
-                    lokiDB.addToDB(hash, descaledMove, winnerID == 0 ? DRAW : (winnerID == id ? WIN : LOSS));
+                    lokiDB.addToDB(hash, descaledMove, winnerID == DRAW ? DRAW : (winnerID == id ? WIN : LOSS));
                 }
 
                 startX++;
@@ -176,7 +201,7 @@ public class Loki {
     }
 
     // The actual learning mechanism. Requires that all moves are registered with registerMoveInDB.
-    public void storeGameDataInDB(int winnerID) {
+    public void storeRegisteredMovesInDB(int winnerID) {
         // Start time of start of storing process.
         System.out.println("Loki: Storing game data in DB...");
         long startTime = System.currentTimeMillis();
@@ -185,7 +210,7 @@ public class Loki {
         for (GameData gd : gameData) {
             int searchWidth = size;
             while (searchWidth > 1) {
-                storeDataInDB(gd, winnerID, searchWidth);
+                storeMovesInDB(gd, winnerID, searchWidth);
 
                 searchWidth--;
             }
@@ -204,25 +229,12 @@ public class Loki {
         System.out.println("Loki: Game data stored in " + timeSpent + " ms.");
     }
 
-    public LokiResult thinkOfAMove(int[][] board) {
+    public LokiResult thinkOfAMove(int[][] board, int id) {
         // Start time of AI's turn.
         System.out.println("Loki: Thinking out a move...");
         long startTime = System.currentTimeMillis();
 
-        // Clone board and consider a move.
-        int[][] clonedBoard = Utils.cloneMatrix(board);
-        LokiResult ret = thinkOfAMoveInner(clonedBoard);
-
-        // End time of AI's turn.
-        long endTime = System.currentTimeMillis();
-        long timeSpent = endTime - startTime;
-        Point move = ret.getMove();
-        System.out.println("Loki: Move " + move.x + ":" + move.y + " chosen in " + timeSpent + " ms.");
-
-        return ret;
-    }
-
-    private LokiResult thinkOfAMoveInner(int[][] board) {
+        // Create new data hash for available moves found.
         Map<Point, MoveData> data = new HashMap<>();
 
         // Search for patterns and add statistics to data.
@@ -231,8 +243,9 @@ public class Loki {
         ArrayList<MoveData> resultData;
         boolean positiveSearchResultFound = false;
         while (!positiveSearchResultFound && searchWidth > 1) {
+            // Clone board and consider a move.
             int[][] clonedBoard = Utils.cloneMatrix(board);
-            resultData = getDataFromDB(clonedBoard, searchWidth);
+            resultData = getMovesFromDB(clonedBoard, id, searchWidth);
 
             if (resultData != null) {
                 // Go through result data and add to data.
@@ -249,16 +262,12 @@ public class Loki {
                     }
                 }
 
-                // Check if any win chance, if not clear data an proceed to the next level.
-                for(Point p : data.keySet()){
-                    if(data.get(p).thoughtResult() > 0)
-                    {
+                // Check if any win chance, if not clear data and proceed to the next level.
+                for (Point p : data.keySet()) {
+                    if (data.get(p).thoughtResult() > 0) {
                         searchLevelOfResult = searchWidth;
                         positiveSearchResultFound = true;
                     }
-                }
-                if(!positiveSearchResultFound){
-                    data.clear();
                 }
             }
 
@@ -295,8 +304,16 @@ public class Loki {
         System.out.println("Loki search level of results: " + searchLevelOfResult);
         System.out.println("Loki result percentage: " + bestThoughtResult);
 
-        // Select the best move and return a LokiResult, if more then one then randomly select one of them.
+        // Select the best move and store in returning LokiResult, if more then one then randomly select one of them.
         Point bestMove = bestMoves.get(random.nextInt(bestMoves.size()));
-        return new LokiResult(bestMove, thoughtData, width, height);
+        LokiResult ret = new LokiResult(bestMove, thoughtData, width, height);
+
+        // End time of AI's turn.
+        long endTime = System.currentTimeMillis();
+        long timeSpent = endTime - startTime;
+        Point move = ret.getMove();
+        System.out.println("Loki: Move " + move.x + ":" + move.y + " chosen in " + timeSpent + " ms.");
+
+        return ret;
     }
 }
