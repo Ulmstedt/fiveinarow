@@ -77,7 +77,7 @@ public class Game {
                     o.roundEnded(winner);
                 }
 
-                //resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
+                resetGame(); //automatically start new game after someone wins (for fast ai vs ai games)
             }
             winner = 0;
 
@@ -100,8 +100,8 @@ public class Game {
         //playerList.add(new AIJimmyOld(2, this));
 
         this.playerStarted = 0;
-        //this.currentPlayer = playerList.get(playerStarted);
-        currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
+        this.currentPlayer = playerList.get(playerStarted);
+        //currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
         if (USE_RANDOM_COLORS >= 1) {
             this.colors = generateRandomColors(); //Random colors
         }
@@ -129,8 +129,8 @@ public class Game {
         if (playerStarted == playerList.size()) {
             playerStarted = 0;
         }
-        //currentPlayer = playerList.get(playerStarted);
-        currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
+        currentPlayer = playerList.get(playerStarted);
+        //currentPlayer = playerList.get(1); //Player 2 always starts (can anyone beat AIPlayer when he starts?)
     }
 
     private Color[][] generateRandomColors() {
