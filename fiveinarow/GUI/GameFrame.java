@@ -2,12 +2,7 @@ package fiveinarow.GUI;
 
 import fiveinarow.Game.Game;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 /**
  *
@@ -38,25 +33,4 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
     }
 
-    private void createMenus() {
-        final JMenu file = new JMenu("File");
-        final JMenuItem quit = new JMenuItem("Quit");
-        final JMenuBar bar = new JMenuBar();
-
-        ActionListener al = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == quit) {
-                    System.exit(0);
-                }
-            }
-        };
-
-        quit.addActionListener(al);
-        file.add(quit);
-        bar.add(file);
-
-        this.setJMenuBar(bar);
-
-    }
 }
