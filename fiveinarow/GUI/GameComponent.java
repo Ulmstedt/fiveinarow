@@ -14,14 +14,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 /**
@@ -43,95 +39,7 @@ public class GameComponent extends JComponent implements GameListener, MouseList
         this.width = Constants.SQUARE_SIZE * game.getWidth() + Constants.LINE_THICKNESS;
         this.height = Constants.SQUARE_SIZE * game.getHeight() + Constants.PADDING_TOP + Constants.LINE_THICKNESS + Constants.PADDING_BOTTOM;
         addMouseListener(this);
-        addKeyBindings();
     }
-
-    private void addKeyBindings() {
-        //Left
-        this.getActionMap().put("leftPressed", pressedLeftAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("pressed LEFT"), "leftPressed");
-        this.getActionMap().put("leftReleased", releasedLeftAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("released LEFT"), "leftReleased");
-        //Right
-        this.getActionMap().put("rightPressed", pressedRightAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("pressed RIGHT"), "rightPressed");
-        this.getActionMap().put("rightReleased", releasedRightAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("released RIGHT"), "rightReleased");
-        //Up
-        this.getActionMap().put("upPressed", upAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upPressed");
-        //Down
-        this.getActionMap().put("downPressed", downAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "downPressed");
-        //Escape
-        this.getActionMap().put("escapePressed", escapeAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "escapePressed");
-        //Space
-        this.getActionMap().put("spacePressed", spaceBarPressedAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("pressed SPACE"), "spacePressed");
-        this.getActionMap().put("spaceReleased", spaceBarReleasedAction);
-        this.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "spaceReleased");
-        //Enter (same function as for space)
-        this.getInputMap().put(KeyStroke.getKeyStroke("pressed ENTER"), "spacePressed");
-        this.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "spaceReleased");
-    }
-
-    // --------------------------------
-    // All the actions for the keybinds
-    // --------------------------------
-    Action pressedLeftAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action releasedLeftAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action pressedRightAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action releasedRightAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action upAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action downAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action escapeAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action spaceBarPressedAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
-
-    Action spaceBarReleasedAction = new AbstractAction() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        }
-    };
 
     @Override
     public Dimension getPreferredSize() {
